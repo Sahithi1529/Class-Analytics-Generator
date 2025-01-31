@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <form method="post" action="administrator/addFaculty">
+        {% csrf_token %}
+
+        <label>Faculty ID:</label>
+        <input type="number" name="facultyID" id="facultyID" required><br><br>
+
+        <label>Password:</label>
+        <input type="password" name="password" id="password" required><br><br>
+
+        <label>Faculty Name:</label>
+        <input type="text" name="facultyName" id="facultyName" required><br><br>
+
+        <label>Designation:</label>
+        <input type="text" name="facultyDesignation" id="facultyDesignation" required><br><br>
+
+        <label>Email:</label>
+        <input type="email" name="email" id="email" required><br><br>
+
+        <label for="phone">Phone:</label>
+        <input type="number" name="phone" id="phone" required><br><br>
+
+        <label for="assigned_classes">Assign Classes:</label>
+        <select name="assigned_classes" id="assigned_classes" multiple required>
+            {% for classroom in classrooms %}
+                <option value="{{ classroom.id }}">{{ classroom.className }}</option>
+            {% endfor %}
+        </select>
+        <br><br>
+
+        <button type="submit">Submit</button>
+    </form>
+    <br>
+<a href="crudFaculty.html">Back</a>  
+</body>
+</html>

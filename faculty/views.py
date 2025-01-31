@@ -10,5 +10,10 @@ def reDirect(request):
 
 
 # Intial Function
-def sayHello(request):
-    return render(request,'hello.html')
+def facultyLogin(request):
+    return render(request,'facultyLogin.html')
+
+def homePage(request):
+    entered_id = request.POST.get("facultyid")
+    entered_password = request.POST.get("password")
+    

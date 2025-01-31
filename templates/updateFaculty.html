@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UpdateFaculty</title>
+</head>
+<body>
+    <h2>Update Faculty</h2>
+<form method="post">
+    {% csrf_token %}
+    <label>Faculty ID:</label>
+    <input type="number" name="facultyID"><br><br>
+    <button type="submit">Update</button>
+</form>
+<a href="crudFaculty.html">Back</a>
+
+</body>
+</html>
