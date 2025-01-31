@@ -21,6 +21,6 @@ from faculty import views as facultyViews
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('faculty',include('faculty.urls')),
-    path('administrator',include('administrator.urls')),
+    path('administrator/',include('administrator.urls')),
     path("",facultyViews.reDirect)
 ]

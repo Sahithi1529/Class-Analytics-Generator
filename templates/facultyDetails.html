@@ -1,0 +1,24 @@
+<form method="POST">
+    {% csrf_token %}
+    
+    <label for="facultyName">Faculty Name:</label>
+    <input type="text" name="facultyName" required><br>
+
+    <label for="facultyDesignation">Designation:</label>
+    <input type="text" name="facultyDesignation" required><br>
+
+    <label for="email">Email:</label>
+    <input type="email" name="email" required><br>
+
+    <label for="phone">Phone:</label>
+    <input type="text" name="phone" required><br>
+
+    <label for="assigned_classes">Assign Classes:</label>
+    <select name="assigned_classes" multiple required>
+        {% for classroom in classrooms %}
+            <option value="{{ classroom.classID }}">{{ classroom.className }}</option>
+        {% endfor %}
+    </select><br>
+
+    <button type="submit">Submit</button>
+</form>
