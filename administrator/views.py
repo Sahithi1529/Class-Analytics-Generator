@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect
-from .models import FacultyData, Classroom
+from . import database_operations as db
 
 
 # Create your views here.
@@ -9,8 +9,12 @@ def Login(request):
     elif(request.method == "POST"):
         entered_id = request.POST.get("adminid")
         entered_password = request.POST.get("password")
-        if entered_id == "101" and entered_password == "123":
-            return render(request, "crudFaculty.html")
+        actual_password,cols = db.retrieve_data('database.sqlite','admins',['adminPassword'],'adminID = '+ entered_id)
+        print(actual_password)
+        if entered_password == actual_password[0][0]:
+            return render(request,'messenger.html',{'title':"HomePage","message":"Welcome to HomePage!"})
+        else:
+            return render(request,'messenger.html',{'title':"Failure","message":"Invalid Credentials"})
         
 
     #         return render(request,"messenger.html",{'title':"Success",'message':"Login Success"})
@@ -50,6 +54,22 @@ def addFaculty(request):
     classrooms = Classroom.objects.all()
     return render(request, "addFaculty.html", {"classrooms": classrooms})
 
+# Test Path
+def Test(request):
+    return render(request,'test.html')
+
+# Insert Data
+def insertData(request):
+    return render(request,'test.html')
+    
+
+# View data 
+def viewData(request):
+    return render(request,'test.html')
+    
+# Download Excel File
+def DownloadData(request):
+    db.retrieve_data_as_csv('database.sqlite','USER','/static/users.csv')
 
 
 
