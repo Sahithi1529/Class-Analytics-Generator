@@ -11,8 +11,11 @@ import database_operations as db
 # print(db.retrieve_data('database.sqlite','admins',['adminName','adminPassword'],'adminID = 101'))
 
 # db.insert_into_table_from_file('database.sqlite','admins','test.csv')
-# print(db.retrieve_data('database.sqlite','admins'))
+# print(db.retrieve_data('../database.sqlite','admins'))
 
+db.download_data_as_csv('../database.sqlite','admins','Data.csv')
+# print(db.retrieve_data('database.sqlite','admins',['adminPassword'],'adminID = '+str(101)))
 
-# db.download_data_as_csv('database.sqlite','admins','Data.csv')
-print(db.retrieve_data('database.sqlite','admins',['adminPassword'],'adminID = '+str(101)))
+# print(db.update_data('../database.sqlite','admins',{'adminPassword':'Darahas1','adminName':'Darahas'},'adminID = 103'))
+
+# db.delete_data('../database.sqlite','admins','adminID = 105')

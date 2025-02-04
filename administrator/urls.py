@@ -3,5 +3,6 @@ from . import views
 urlpatterns = [
    path("",views.Login),
    path('test',views.Test),
-   path("download-data",views.DownloadData)
+   path("download-data",views.DownloadData),
+   path('admin-dashboard',views.adminDashboard)
 ]

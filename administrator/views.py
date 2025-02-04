@@ -1,4 +1,6 @@
 from django.shortcuts import render, redirect
+from django.http import HttpResponseRedirect
+from .models import FacultyData,Classroom
 from . import database_operations as db
 
 
@@ -12,7 +14,7 @@ def Login(request):
         actual_password,cols = db.retrieve_data('database.sqlite','admins',['adminPassword'],'adminID = '+ entered_id)
         print(actual_password)
         if entered_password == actual_password[0][0]:
-            return render(request,'messenger.html',{'title':"HomePage","message":"Welcome to HomePage!"})
+            return HttpResponseRedirect('admin-dashboard')
         else:
             return render(request,'messenger.html',{'title':"Failure","message":"Invalid Credentials"})
         
@@ -72,5 +74,7 @@ def DownloadData(request):
     db.retrieve_data_as_csv('database.sqlite','USER','/static/users.csv')
 
 
-
+# Admin Dashboard
+def adminDashboard(request):
+    return render(request,'adminHome.html')
 

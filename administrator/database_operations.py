@@ -106,4 +106,52 @@ def download_data_as_csv(database,tablename,filename):
     print("Csv created successfully")
 
 
+# 02 feb 2025
 
+# Update Data in the Table
+
+def update_data(database, tablename, update_values, condition=None):
+    '''
+    database: database name,
+    tablename: Name of the table,
+    update_values : Dictionary with column names as Keys and new_values as Values
+    '''
+
+    set_clause = []
+    for key in update_values:
+        set_clause.append(f'{key} = ?')
+    set_clause = ','.join(set_clause)
+
+    SQL_QUERY = f"UPDATE {tablename} SET {set_clause}"
+    if condition:
+        SQL_QUERY+=f" WHERE {condition}"
+    SQL_QUERY+=';'
+
+    new_values = list(update_values.values())
+    print(new_values)
+    try:
+        con = connection_object(database)
+        cursor =con.execute(SQL_QUERY,new_values)
+        con.commit()
+        print("Data Updated Successfully!")
+        con.close()
+        return True
+    except Exception as e:
+        print(f"Exception '{e}' occurred while updating data")
+        return False
+    
+#Delete Data from Table
+def delete_data(database, tablename, condition=None):
+    SQL_QUERY = f"DELETE FROM {tablename}"
+    if condition:
+        SQL_QUERY+=f" WHERE {condition}"
+    try:
+        con = connection_object(database)
+        cursor = con.execute(SQL_QUERY)
+        con.commit()
+        print("Data deleted successfully!")
+        con.close()
+        return True
+    except Exception as e:
+        print(f"Exception '{e}' occurred while deleting data")
+        return False
