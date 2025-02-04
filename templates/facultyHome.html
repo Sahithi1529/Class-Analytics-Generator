@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home</title>
+</head>
+<body>
+    <h1>This is Faculty Home Page</h1>
+    <form action="/faculty/send-message" method="post">
+        {%csrf_token%}
+        <label>Maximum Message Size is 99</label>
+        <input type="text" name="message" maxlength="99">
+        <input type="submit">
+    </form>
+</body>
+</html>

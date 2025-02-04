@@ -15,6 +15,17 @@
         <li><a href="">Logout</a></li>
         <li><a>href=""</a>{{Name}}</li>
     </ul>
+    <form action="add-data-via-csv" method="post" enctype="multipart/form-data">
+        {%csrf_token%}
+        <input type="file" name='csvfile' accept=".csv">
+        <input type="submit">
+    </form>
+
+    <form action="update-model" method="post" enctype="multipart/form-data">
+        {%csrf_token%}
+        <input type="file" name='model'>
+        <input type="submit">
+    </form>
     <h1>Welcome {{Name}}</h1>
 </body>
 </html>

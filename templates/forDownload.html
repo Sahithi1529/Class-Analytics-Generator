@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>For download</title>
+</head>
+<body onload="download()">
+    <script>
+        function download()
+        {
+            var a = document.createElement('a');
+            a.setAttribute("href","/static/faculty.csv");
+            console.log("Here");
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            setTimeout(()=> window.history.back(),1000)
+        }
+    </script>
+</body>
+</html>

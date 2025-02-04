@@ -81,7 +81,8 @@ def insert_into_table(database,tablename,values):
         con.commit()
         return True
     except Exception as e:
-        print("Exception '{e}' occured while inserting data into table")
+        print(f"Exception '{e}' occured while inserting data into table")
+        return False
 
 # Insert into the table using file
 def insert_into_table_from_file(database,tablename,filename,filetype='.csv'):
@@ -94,6 +95,7 @@ def insert_into_table_from_file(database,tablename,filename,filetype='.csv'):
         row = dfe.iloc[[index]]
         rows.append(row.values[0])
     insert_into_table(database,tablename,rows)
+    print("Inserted Successfully!")
     return True
 
     
@@ -102,7 +104,7 @@ def download_data_as_csv(database,tablename,filename):
     rows,cols_of_db = retrieve_data(database,tablename)
     dfe = pd.DataFrame(rows,columns=cols_of_db)
     print(dfe.columns)
-    dfe.to_csv(filename)
+    dfe.to_csv(filename,index=False)
     print("Csv created successfully")
 
 
