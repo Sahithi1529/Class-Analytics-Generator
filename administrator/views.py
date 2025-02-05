@@ -5,6 +5,7 @@ import pandas as pd
 import os
 from Class_Analytics_Generator import settings
 from django.core.files.storage import FileSystemStorage
+from datetime import datetime
 # Create your views here.
 def Login(request):
     request.session['isAuthenticated'] = False
@@ -19,40 +20,10 @@ def Login(request):
         if entered_password == actual_password[0][0]:
             request.session['isAuthenticated'] = True
             request.session['role']="admin"
+            request.session['adminId'] = entered_id
             return HttpResponseRedirect('admin-dashboard')
         else:
             return render(request,'messenger.html',{'title':"Failure","message":"Invalid Credentials"})
-
-
-def addFaculty(request):
-    if request.method == "POST":
-        faculty_id = request.POST.get("facultyID")
-        password = request.POST.get("password")
-        faculty_name = request.POST.get("facultyName")
-        faculty_designation = request.POST.get("facultyDesignation")
-        email = request.POST.get("email")
-        phone = request.POST.get("phone")
-        assigned_classes_ids = request.POST.getlist("assigned_classes")  # Multiple selections
-
-        # Create faculty object
-        faculty = FacultyData.objects.create(
-            facultyID=faculty_id,
-            password=password,
-            facultyName=faculty_name,
-            facultyDesignation=faculty_designation,
-            email=email,
-            phone=phone
-        )
-
-        # Assign selected classrooms
-        faculty.assigned_classes.set(Classroom.objects.filter(id__in=assigned_classes_ids))
-        faculty.save()
-
-        return redirect("crudFaculty.html")  # Redirect to home page after submission
-
-    # Fetch all classrooms to show in the dropdown
-    classrooms = Classroom.objects.all()
-    return render(request, "addFaculty.html", {"classrooms": classrooms})
 
 # Test Path
 def Test(request):
@@ -93,8 +64,20 @@ def logout(request):
     return HttpResponseRedirect('/administrator/')
 
 
-# POST @/administrator/add-data-via-csv  ---> ADD DATA FROM CSV
-def addDataViaCSV(request):
+# POST @/administrator/add-faculty-via-csv  ---> ADD FACULTY DATA FROM CSV
+def addFacultyViaCSV(request):
+    if request.method !='POST':
+        return HttpResponse("Not Allowed!")
+    if request.session['isAuthenticated'] and request.session['role']=='admin':
+        try:
+           db.insert_into_table_from_file('coredb.sqlite','FACULTY',request.FILES['csvfile'])
+        except:
+            return HttpResponse("Sorry, unexpected error occured")
+        return HttpResponse("Added Faculty Successfully!")
+    
+
+# POST @/administrator/add-admin-via-csv  ---> ADD ADMIN DATA FROM CSV
+def addAdminViaCSV(request):
     if request.method !='POST':
         return HttpResponse("Not Allowed!")
     if request.session['isAuthenticated'] and request.session['role']=='admin':
@@ -102,7 +85,8 @@ def addDataViaCSV(request):
            db.insert_into_table_from_file('coredb.sqlite','ADMIN',request.FILES['csvfile'])
         except:
             return HttpResponse("Sorry, unexpected error occured")
-        return HttpResponse("Added Faculty Successfully!")
+        return HttpResponse("Added Admins Successfully!")
+        
         
 
 # GET @/adiministrator/download-data  ---> DOWNLOAD FACULTY DATA
@@ -116,3 +100,65 @@ def downloadData(request):
     else:
         # User not Allowed o Download the data
         return render(request,'messenger.html',{'title':"Download prohibited",'message':"You cannot download the file"})
+    
+# GET @/administrator/view-messages  ---> SEE MESSAGES IN INBOX
+def viewMessages(request):
+     if not request.session['isAuthenticated'] or request.session['role']!='admin':
+        return HttpResponse("Access Blocked")
+     if request.method !='GET':
+         return HttpResponse("Only GET Requests are accepted")
+     try:
+         rows,cols = db.retrieve_data('coredb.sqlite','MESSAGES',['SenderId','SentDate','SentTime','Message'],'ReceiverId = '+ str(request.session['adminId']))
+         context = []
+         for row in rows:
+             k = {}
+             k['sender'] = row[0]
+             k['date'] = row[1]
+             k['time'] = row[2]
+             k['message'] = row[3]
+             context.append(k)
+         return render(request,'viewMessages.html',{'messages':context})
+     except Exception as e:
+         print(f"Exception '{e}' Occured")
+         return HttpResponse("Sorry Try again!!")
+     
+# POST @/administrator/send-message  ---> SEND MESSAGE TO THE ADMIN
+def sendMessage(request):
+     if not request.session['isAuthenticated'] or request.session['role']!='admin':
+        return HttpResponse("Access Blocked")
+     if request.method !='POST':
+         return HttpResponse("Only Post Requests are accepted")
+     message = request.POST.get('message')
+     sender = request.session['adminId']
+     receiver = request.POST.get('receiverId')
+     curr = str(datetime.today()).split()
+     date = curr[0]
+     time = curr[1][:8]
+     print(sender,receiver,date,time,message)
+     rows = [[int(sender),int(receiver),date,time,message]]
+     try:
+         if db.insert_into_table('coredb.sqlite','MESSAGES',rows):
+            return HttpResponse("Message Sent Successfully")
+         else:
+            return HttpResponse("Message is not sent")
+     
+     except Exception as e:
+         print(f"Exception '{e}' Occurred when inserting data into Messages")
+         return HttpResponse("Message is not sent")
+     
+# GET @/administrator/view-faculty   ---> DISPLAY FACULTY LIST
+def viewFaculty(request):
+     if not request.session['isAuthenticated'] or request.session['role']!='admin':
+        return HttpResponse("Access Blocked")
+     if request.method !='GET':
+         return HttpResponse("Only Get Requests are accepted")
+     faculty,cols = db.retrieve_data('coredb.sqlite','FACULTY',['FacultyId','FacultyName','FacultyDepartment'])
+     context = []
+     for (fid,fname,fdept) in faculty:
+         k = {}
+         k['facultyId'] = fid
+         k['facultyName'] = fname
+         k['facultyDepartment'] = fdept
+         k['generate'] = '/administrator/generate-analytics?'+str(fid)
+         context.append(k)
+     return render(request,'viewFaculty.html',{'context':context})

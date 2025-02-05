@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Faculty</title>
+</head>
+<body>
+    <table>
+        <tr>
+            <th>Faculty Id</th>
+            <th>Faculty Name</th>
+            <th>Faculty Department</th>
+            <th>Generate Analytics</th>
+        </tr>
+        {% for faculty in context %}
+        <tr>
+            <td>{{faculty.facultyId}}</td>
+            <td>{{faculty.facultyName}}</td>
+            <td>{{faculty.facultyDepartment}}</td>
+            <td><a href={{faculty.generate}}>Generate</a></td>
+        </tr>
+        {% endfor %}
+        
+        </table>
+    
+</body>
+</html>
