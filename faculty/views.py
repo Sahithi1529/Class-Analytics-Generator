@@ -76,7 +76,7 @@ def viewMessages(request):
      if not request.session['isAuthenticated'] or request.session['role']!='faculty':
         return HttpResponse("Access Blocked")
      if request.method !='GET':
-         return HttpResponse("Only Post Requests are accepted")
+         return HttpResponse("Only GET Requests are accepted")
      try:
          rows,cols = db.retrieve_data('coredb.sqlite','MESSAGES',['SenderId','SentDate','SentTime','Message'],'ReceiverId = '+ str(request.session['facultyId']))
          context = []
@@ -91,6 +91,35 @@ def viewMessages(request):
      except Exception as e:
          print(f"Exception '{e}' Occured")
          return HttpResponse("Sorry Try again!!")
+     
+
+# GET @/faculty/view-courses   ---> VIEW COURSES OF FACULTY
+def viewCourses(request):
+     if not request.session['isAuthenticated'] or request.session['role']!='faculty':
+        return HttpResponse("Access Blocked")
+     if request.method !='GET':
+         return HttpResponse("Only GET Requests are accepted")
+     courses,cols = db.retrieve_data('coredb.sqlite','MAPPING',['*'],'FACULTYID = '+str(request.session['facultyId']))
+     classes = []
+     subjects = []
+     for course in courses:
+         classi = course[2]
+         subject = course[1]
+         subject,cols = db.retrieve_data('coredb.sqlite','COURSE',['subjectname'],'SUBJECTID ='+str(subject))
+         classi,cols = db.retrieve_data('coredb.sqlite','CLASSROOM',['year','department','section'],'CLASSID ='+str(classi))
+         class_name = " ".join(classi[0])
+         print(class_name)
+         classes.append(class_name)
+         subjects.append(subject[0][0])
+     context  = []
+     for i in range(len(classes)):
+         k = {}
+         k['classname'] = classes[i]
+         k['subject'] = subject[i][0]
+         context.append(k)
+        #  k[''] = subject[i]
+     return render(request,'viewCourses.html',{'courses':context})
+
 
 
      

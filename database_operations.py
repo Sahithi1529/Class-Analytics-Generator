@@ -34,7 +34,7 @@ def create_table(database,tablename,columns):
      con = connection_object(database)
      con.execute(SQL_QUERY)
      con.commit()
-     print("Table Created Successfully!!")
+     print(f"Table '{tablename}' Created Successfully!!")
      con.close()
      return True
     except Exception as e:

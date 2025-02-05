@@ -9,3 +9,5 @@ while True:
         break
 cam.release()
 cv.destroyAllWindows()
+
+string

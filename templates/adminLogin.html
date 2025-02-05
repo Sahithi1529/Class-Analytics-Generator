@@ -1,15 +1,157 @@
-<html>
-    <head>
-        <title>
-            adminLogin
-        </title>
-    </head>
-    <body>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Login</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(120deg, #e0c3fc 0%, #8ec5fc 100%);
+        }
+
+        .login-container {
+            background: rgba(255, 255, 255, 0.9);
+            padding: 40px;
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+            width: 100%;
+            max-width: 400px;
+            opacity: 0; /* Initial opacity for animation */
+        }
+
+        h1 {
+            color: #2c3e50;
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 2em;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        input {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid transparent;
+            background: rgba(236, 240, 243, 0.8);
+            border-radius: 10px;
+            color: #2c3e50;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            margin-bottom: 15px;
+            opacity: 0; /* Start hidden for animation */
+            transform: translateX(-30px); /* Move left initially */
+        }
+
+        input::placeholder {
+            color: #95a5a6;
+        }
+
+        input:focus {
+            outline: none;
+            border: 2px solid #8ec5fc;
+            background: white;
+            transform: scale(1.02);
+            box-shadow: 0 5px 15px rgba(142, 197, 252, 0.3);
+        }
+
+        button {
+            width: 100%;
+            padding: 15px;
+            border: none;
+            border-radius: 10px;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            opacity: 0; /* Hide initially */
+            transform: scale(0.8);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.2);
+        }
+
+        button:hover {
+            background: linear-gradient(45deg, #764ba2, #667eea);
+            transform: scale(1.05);
+            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3);
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <h1>Admin Login</h1>
         <form method="post" action="#">
-            {%csrf_token%}
-           <input placeholder="id" name="adminid">
-           <input placeholder="password" name="password">
-           <button type="submit" >Submit</button>
+            {% csrf_token %}
+            <div class="input-group">
+                <input placeholder="Admin ID" name="adminid" type="text" required>
+                <input placeholder="Password" name="password" type="password" required>
+            </div>
+            <button type="submit">Login</button>
         </form>
-    </body>
+    </div>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <script>
+        // Animate login container
+        gsap.to('.login-container', {
+            opacity: 1,
+            y: 0,
+            duration: 1.2,
+            ease: 'power2.out',
+        });
+
+        // Animate inputs
+        gsap.to('input', {
+            x: 0,
+            opacity: 1,
+            duration: 1,
+            delay: 0.4,
+            stagger: 0.15,
+            ease: 'power2.out',
+        });
+
+        // Animate button
+        gsap.to('button', {
+            scale: 1,
+            opacity: 1,
+            duration: 1,
+            delay: 0.2,
+            ease: 'back.out(1.7)',
+        });
+
+        // Input focus effect
+        document.querySelectorAll('input').forEach(input => {
+            input.addEventListener('focus', () => {
+                gsap.to(input, {
+                    scale: 1.05,
+                    duration: 0.2,
+                });
+            });
+
+            input.addEventListener('blur', () => {
+                gsap.to(input, {
+                    scale: 1,
+                    duration: 0.2,
+                });
+            });
+        });
+    </script>
+</body>
 </html>

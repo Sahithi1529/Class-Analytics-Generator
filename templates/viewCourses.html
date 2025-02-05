@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>View Courses</title>
+</head>
+<body>
+    <table>
+        <tr>
+            <th>Class Name</th>
+            <th>Subject</th>
+            <!-- <th>Start Tracking Students</th> -->
+        </tr>
+        {% for course in courses %}
+        <tr>
+            <td>{{course.classname}}</td>
+            <td>{{course.subject}}</td>
+            <!-- <td><a href="/intelligence?{{course.classId}}">Start Session</a></td> -->
+        </tr>
+
+        {% endfor %}
+    </table>
+</body>
+</html>

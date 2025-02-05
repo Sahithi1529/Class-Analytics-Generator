@@ -5,5 +5,6 @@ urlpatterns = [
     path("faculty-dashboard",views.facultyDashboard),
     path('logout',views.logout),
     path('send-message',views.sendMessage),
-    path('view-messages',views.viewMessages)
+    path('view-messages',views.viewMessages),
+    path('view-courses',views.viewCourses)
 ]
