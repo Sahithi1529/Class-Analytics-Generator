@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Started Tracking</title>
+</head>
+<body>
+    <h1>Please Wait... Started Generating Analytics</h1>
+    <img src="{%url 'generate-analytics'%}?filename={{filename}}" height="50px" width="50px" hidden>
+    <img src="{%url 'show-analytics' %}?filename={{filename}}" height="50%" width="50%" alt="Analytics are being generated">
+</body>
+</html>
