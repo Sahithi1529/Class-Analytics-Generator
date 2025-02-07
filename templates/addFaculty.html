@@ -3,41 +3,173 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Add Faculty</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+        }
+
+        .form-container {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            width: 700px;
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        .input-group {
+            margin-bottom: 0.8rem;
+        }
+
+        .full-width {
+            grid-column: 1 / -1;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 0.3rem;
+            color: #4a5568;
+            font-size: 0.9rem;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 0.5rem;
+            border: 1px solid #e2e8f0;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            opacity: 0;
+            transform: translateX(-20px);
+        }
+
+        select[multiple] {
+            height: 80px;
+        }
+
+        button {
+            width: 100%;
+            padding: 10px;
+            border: none;
+            border-radius: 6px;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            font-size: 0.9rem;
+            cursor: pointer;
+            opacity: 0;
+            transform: scale(0.8);
+        }
+
+        button:hover {
+            background: linear-gradient(45deg, #764ba2, #667eea);
+        }
+
+        .back-link {
+            margin-top: 1rem;
+            color: #4a5568;
+            text-decoration: none;
+            font-size: 0.9rem;
+            opacity: 0;
+        }
+    </style>
 </head>
 <body>
-    <form method="post" action="administrator/addFaculty">
-        {% csrf_token %}
+    <div class="form-container">
+        <form method="post" action="administrator/addFaculty">
+            {% csrf_token %}
+            <div class="form-grid">
+                <div class="input-group">
+                    <label>Faculty ID:</label>
+                    <input type="number" name="facultyID" id="facultyID" required>
+                </div>
 
-        <label>Faculty ID:</label>
-        <input type="number" name="facultyID" id="facultyID" required><br><br>
+                <div class="input-group">
+                    <label>Password:</label>
+                    <input type="password" name="password" id="password" required>
+                </div>
 
-        <label>Password:</label>
-        <input type="password" name="password" id="password" required><br><br>
+                <div class="input-group">
+                    <label>Faculty Name:</label>
+                    <input type="text" name="facultyName" id="facultyName" required>
+                </div>
 
-        <label>Faculty Name:</label>
-        <input type="text" name="facultyName" id="facultyName" required><br><br>
+                <div class="input-group">
+                    <label>Designation:</label>
+                    <input type="text" name="facultyDesignation" id="facultyDesignation" required>
+                </div>
 
-        <label>Designation:</label>
-        <input type="text" name="facultyDesignation" id="facultyDesignation" required><br><br>
+                <div class="input-group">
+                    <label>Email:</label>
+                    <input type="email" name="email" id="email" required>
+                </div>
 
-        <label>Email:</label>
-        <input type="email" name="email" id="email" required><br><br>
+                <div class="input-group">
+                    <label>Phone:</label>
+                    <input type="number" name="phone" id="phone" required>
+                </div>
 
-        <label for="phone">Phone:</label>
-        <input type="number" name="phone" id="phone" required><br><br>
+                <div class="input-group full-width">
+                    <label>Assign Classes:</label>
+                    <select name="assigned_classes" id="assigned_classes" multiple required>
+                        {% for classroom in classrooms %}
+                            <option value="{{ classroom.id }}">{{ classroom.className }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
 
-        <label for="assigned_classes">Assign Classes:</label>
-        <select name="assigned_classes" id="assigned_classes" multiple required>
-            {% for classroom in classrooms %}
-                <option value="{{ classroom.id }}">{{ classroom.className }}</option>
-            {% endfor %}
-        </select>
-        <br><br>
+                <div class="input-group full-width">
+                    <button type="submit">Submit</button>
+                </div>
+            </div>
+        </form>
+    </div>
+    <a href="crudFaculty.html" class="back-link">Back</a>
 
-        <button type="submit">Submit</button>
-    </form>
-    <br>
-<a href="crudFaculty.html">Back</a>  
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <script>
+        gsap.to('.form-container', {
+            opacity: 1,
+            y: 0,
+            duration: 1,
+            ease: 'power2.out',
+        });
+
+        gsap.to('input, select', {
+            x: 0,
+            opacity: 1,
+            duration: 0.8,
+            delay: 0.3,
+            stagger: 0.1,
+            ease: 'power2.out',
+        });
+
+        gsap.to('button', {
+            scale: 1,
+            opacity: 1,
+            duration: 0.8,
+            delay: 0.2,
+            ease: 'back.out(1.7)',
+        });
+
+        gsap.to('.back-link', {
+            opacity: 1,
+            duration: 0.8,
+            delay: 1,
+            ease: 'power2.out',
+        });
+    </script>
 </body>
 </html>

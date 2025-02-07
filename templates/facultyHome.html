@@ -3,15 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Home</title>
+    <title>Faculty Home</title>
 </head>
 <body>
-    <h1>This is Faculty Home Page</h1>
-    <form action="/faculty/send-message" method="post">
-        {%csrf_token%}
-        <label>Maximum Message Size is 99</label>
-        <input type="text" name="message" maxlength="99">
-        <input type="submit">
-    </form>
+    <div class="container">
+        <h1>Faculty Home Page</h1>
+        <form action="/faculty/send-message" method="post">
+            {% csrf_token %}
+            <label>Maximum Message Size is 99</label>
+            <input type="text" name="message" maxlength="99" placeholder="Enter your message">
+            <input type="submit" value="Send Message">
+        </form>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
 </body>
 </html>

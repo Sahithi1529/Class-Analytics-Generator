@@ -72,6 +72,31 @@
             box-shadow: 0 5px 15px rgba(142, 197, 252, 0.3);
         }
 
+        .password-container {
+            position: relative;
+            width: 100%;
+        }
+
+        .toggle-password {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-90%);
+            cursor: pointer;
+            color: #95a5a6;
+            user-select: none;
+            font-size: 14px;
+            opacity: 0; /* Changed: Start with opacity 0 */
+            transition: opacity 0.3s ease;
+            text-transform: uppercase;
+            font-weight: 600;
+        }
+
+        .toggle-password:hover {
+            opacity: 1;
+            color: #667eea;
+        }
+
         button {
             width: 100%;
             padding: 15px;
@@ -101,7 +126,10 @@
             {% csrf_token %}
             <div class="input-group">
                 <input placeholder="Admin ID" name="adminid" type="text" required>
-                <input placeholder="Password" name="password" type="password" required>
+                <div class="password-container">
+                    <input placeholder="Password" name="password" type="password" required>
+                    <span class="toggle-password">Show</span>
+                </div>
             </div>
             <button type="submit">Login</button>
         </form>
@@ -136,6 +164,14 @@
             ease: 'back.out(1.7)',
         });
 
+        // Add this: Animate toggle password button
+        gsap.to('.toggle-password', {
+            opacity: 1,
+            duration: 1,
+            delay: 0.7, // Appears after inputs animation
+            ease: 'power2.out',
+        });
+
         // Input focus effect
         document.querySelectorAll('input').forEach(input => {
             input.addEventListener('focus', () => {
@@ -151,6 +187,18 @@
                     duration: 0.2,
                 });
             });
+        });
+
+        // Toggle password visibility
+        document.querySelector('.toggle-password').addEventListener('click', function() {
+            const passwordInput = document.querySelector('input[name="password"]');
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                this.textContent = 'Hide';
+            } else {
+                passwordInput.type = 'password';
+                this.textContent = 'Show';
+            }
         });
     </script>
 </body>

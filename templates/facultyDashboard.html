@@ -1,0 +1,28 @@
+{% extends 'facultyNav.html' %}
+
+{% block title%}
+<title>Faculty Dashboard</title>
+{% endblock %}
+
+{% block link%}
+<link rel="stylesheet" href="/static/stylesheets/facultyDashboard.css">
+{% endblock %}
+
+{% block profile%}
+{{name}}
+{% endblock %}
+
+{% block body%}
+<div class="container">
+    <h1>Faculty Home Page</h1>
+    <form action="/faculty/send-message" method="post">
+        {% csrf_token %}
+        <label>Maximum Message Size is 99</label>
+        <input type="text" name="message" maxlength="99" placeholder="Enter your message">
+        <input type="submit" value="Send Message">
+    </form>
+</div>
+{% endblock %}
+{% block script%}
+<script src="/static/scripts/facultyDashboard.js"></script>
+{% endblock %}

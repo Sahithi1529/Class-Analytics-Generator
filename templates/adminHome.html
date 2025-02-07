@@ -23,25 +23,34 @@
             opacity: 0;
         }
 
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
         #nav-bar {
             list-style: none;
             display: flex;
             justify-content: center;
-            background: rgba(255, 255, 255, 0.9);
+            background: rgba(255, 255, 255, 0.95);
             backdrop-filter: blur(10px);
             padding: 15px 30px;
-            border-radius: 10px;
+            border-radius: 15px;
             box-shadow: 0 5px 15px rgba(0,0,0,0.1);
             position: fixed;
-            top: 10px;
+            top: 20px;
             left: 50%;
             transform: translateX(-50%);
             opacity: 0;
             z-index: 100;
+            width: 90%;
+            max-width: 1000px;
         }
 
         #nav-bar li {
-            margin: 0 15px;
+            margin: 0 20px;
             font-size: 16px;
             font-weight: 500;
             opacity: 0;
@@ -51,26 +60,40 @@
         #nav-bar a {
             text-decoration: none;
             color: #2c3e50;
-            transition: color 0.3s ease;
+            transition: all 0.3s ease;
+            padding: 8px 15px;
+            border-radius: 8px;
         }
 
         #nav-bar a:hover {
             color: #764ba2;
+            background: rgba(118, 75, 162, 0.1);
         }
 
         .user-name {
             font-weight: 600;
             color: #764ba2;
+            padding: 8px 15px;
+            background: rgba(118, 75, 162, 0.1);
+            border-radius: 8px;
+        }
+
+        .main-content {
+            margin-top: 100px;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 30px;
         }
 
         .form-container {
-            background: rgba(255, 255, 255, 0.9);
-            padding: 30px;
-            border-radius: 15px;
-            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
-            margin: 20px 0;
-            width: 100%;
-            max-width: 400px;
+            background: rgba(255, 255, 255, 0.95);
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 15px 30px rgba(0,0,0,0.1);
+            width: 90%;
+            max-width: 500px;
             text-align: center;
             backdrop-filter: blur(10px);
             display: none;
@@ -81,6 +104,36 @@
             z-index: 1000;
         }
 
+        .form-container input[type="text"],
+        .form-container input[type="submit"] {
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0;
+            border: 2px solid #eee;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+
+        .form-container input[type="text"]:focus {
+            border-color: #764ba2;
+            outline: none;
+            box-shadow: 0 0 10px rgba(118, 75, 162, 0.2);
+        }
+
+        .form-container input[type="submit"] {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        .form-container input[type="submit"]:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+        }
+
         .upload-btn {
             padding: 20px 40px;
             border-radius: 15px;
@@ -88,11 +141,12 @@
             font-weight: 600;
             cursor: pointer;
             transition: all 0.3s ease;
-            margin: 20px;
+            margin: 10px;
             border: none;
             color: white;
             opacity: 0;
             transform: translateY(50px);
+            min-width: 250px;
         }
 
         .csv-btn {
@@ -108,22 +162,18 @@
             box-shadow: 0 10px 20px rgba(0,0,0,0.2);
         }
 
-        .form-container h2 {
-            margin-bottom: 20px;
-            color: #2c3e50;
-        }
-
         .drop-zone {
             width: 100%;
             height: 200px;
             border: 3px dashed #ccc;
-            border-radius: 10px;
+            border-radius: 15px;
             display: flex;
             align-items: center;
             justify-content: center;
             flex-direction: column;
             cursor: pointer;
             transition: all 0.3s ease;
+            margin-top: 20px;
         }
 
         .csv-drop {
@@ -137,30 +187,37 @@
         .drop-zone.dragover {
             background: rgba(255, 255, 255, 0.9);
             border-color: #4facfe;
+            transform: scale(1.02);
         }
 
         .drop-zone p {
             font-size: 16px;
             color: #666;
-            margin: 10px 0;
+            margin: 8px 0;
         }
 
         .close-btn {
             position: absolute;
-            top: 10px;
-            right: 10px;
+            top: 15px;
+            right: 15px;
             background: none;
             border: none;
-            font-size: 20px;
+            font-size: 24px;
             cursor: pointer;
             color: #666;
+            transition: all 0.3s ease;
+        }
+
+        .close-btn:hover {
+            color: #FF6B6B;
+            transform: rotate(90deg);
         }
 
         h1 {
             color: #2c3e50;
             text-align: center;
-            margin-top: 20px;
-            font-size: 2em;
+            margin: 20px 0;
+            font-size: 2.5em;
             background: linear-gradient(45deg, #667eea, #764ba2);
             -webkit-background-clip: text;
             background-clip: text;
@@ -175,71 +232,105 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0, 0, 0, 0.5);
+            background: rgba(0, 0, 0, 0.6);
             backdrop-filter: blur(5px);
             opacity: 0;
             display: none;
             z-index: 999;
         }
+
+        .button-container {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+            margin: 20px 0;
+        }
+
+        @media (max-width: 768px) {
+            #nav-bar {
+                padding: 10px;
+                flex-wrap: wrap;
+            }
+
+            #nav-bar li {
+                margin: 5px 10px;
+            }
+
+            .upload-btn {
+                width: 100%;
+                margin: 10px 0;
+            }
+
+            .form-container {
+                width: 95%;
+                padding: 20px;
+            }
+        }
     </style>
 </head>
 <body>
     <div class="overlay" id="overlay"></div>
+    <div class="container">
+        <!-- Navigation Bar -->
+        <ul id="nav-bar">
+            <li><a href="#">Home</a></li>
+            <li><a href="#">Faculty</a></li>
+            <li><a href="#">Manage Admins</a></li>
+            <li><a href="#">Update Profile</a></li>
+            <li><a href="#">Logout</a></li>
+            <li class="user-name">{{ Name }}</li>
+        </ul>
 
-    <!-- Navigation Bar -->
-    <ul id="nav-bar">
-        <li><a href="#">Home</a></li>
-        <li><a href="#">Faculty</a></li>
-        <li><a href="#">Manage Admins</a></li>
-        <li><a href="#">Update Profile</a></li>
-        <li><a href="#">Logout</a></li>
-        <li class="user-name">{{ Name }}</li>
-    </ul>
-    
-    <h1>Welcome, {{ Name }}</h1>
-    
-    <div style="display: flex; justify-content: center; gap: 20px; flex-wrap: wrap;">
-        <button class="upload-btn csv-btn" onclick="showUploadForm('csv')">Upload CSV Data</button>
-        <button class="upload-btn model-btn" onclick="showUploadForm('model')">Upload Model</button>
-        
-        <!-- CSV Upload Form -->
-        <div id="csvForm" class="form-container">
-            <button class="close-btn" onclick="hideUploadForm('csv')">&times;</button>
-            <h2>Upload CSV Data</h2>
-            <form action="add-data-via-csv" method="post" enctype="multipart/form-data">
-                {% csrf_token %}
-                <div class="drop-zone csv-drop" id="csvDropZone">
-                    <p>Drag & Drop CSV file here</p>
-                    <p>or</p>
-                    <p>Click to select file</p>
-                    <input type="file" name="csvfile" accept=".csv" style="display: none" id="csvInput">
-                </div>
-            </form>
-        </div>
+        <div class="main-content">
+            <h1>Welcome, {{ Name }}</h1>
+            
+            <div class="button-container">
+                <button class="upload-btn csv-btn" onclick="showUploadForm('csv')">Upload CSV Data</button>
+                <button class="upload-btn model-btn" onclick="showUploadForm('model')">Upload Model</button>
+            </div>
 
-        <!-- Model Upload Form -->
-        <div id="modelForm" class="form-container">
-            <button class="close-btn" onclick="hideUploadForm('model')">&times;</button>
-            <h2>Upload Model</h2>
-            <form action="update-model" method="post" enctype="multipart/form-data">
-                {% csrf_token %}
-                <div class="drop-zone model-drop" id="modelDropZone">
-                    <p>Drag & Drop model file here</p>
-                    <p>or</p>
-                    <p>Click to select file</p>
-                    <input type="file" name="model" style="display: none" id="modelInput">
-                </div>
-            </form>
-        </div>
+            <!-- CSV Upload Form -->
+            <div id="csvForm" class="form-container">
+                <button class="close-btn" onclick="hideUploadForm('csv')">&times;</button>
+                <h2>Upload CSV Data</h2>
+                <form action="add-data-via-csv" method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <div class="drop-zone csv-drop" id="csvDropZone">
+                        <p>Drag & Drop CSV file here</p>
+                        <p>or</p>
+                        <p>Click to select file</p>
+                        <input type="file" name="csvfile" accept=".csv" style="display: none" id="csvInput">
+                    </div>
+                </form>
+            </div>
 
-        <div class="form-container" style="display: block;">
-            <form action="/administrator/send-message" method="post">
-                {%csrf_token%}
-                <label>Maximum Message Size is 99</label>
-                <input type="text" name="message" maxlength="99">
-                <input type="text" name="receiverId" maxlength="3">
-                <input type="submit">
-            </form>
+            <!-- Model Upload Form -->
+            <div id="modelForm" class="form-container">
+                <button class="close-btn" onclick="hideUploadForm('model')">&times;</button>
+                <h2>Upload Model</h2>
+                <form action="update-model" method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <div class="drop-zone model-drop" id="modelDropZone">
+                        <p>Drag & Drop model file here</p>
+                        <p>or</p>
+                        <p>Click to select file</p>
+                        <input type="file" name="model" style="display: none" id="modelInput">
+                    </div>
+                </form>
+            </div>
+
+            <!-- Message Form -->
+            <div class="form-container message-form">
+                <h2>Send Message</h2>
+                <form action="/administrator/send-message" method="post">
+                    {% csrf_token %}
+                    <label>Maximum Message Size is 99 characters</label>
+                    <input type="text" name="message" maxlength="99" placeholder="Enter your message">
+                    <input type="text" name="receiverId" maxlength="3" placeholder="Enter receiver ID">
+                    <input type="submit" value="Send Message">
+                </form>
+            </div>
         </div>
     </div>
 
@@ -364,6 +455,5 @@
             });
         });
     </script>
-
 </body>
 </html>

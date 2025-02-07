@@ -30,16 +30,16 @@ def facultyLogin(request):
     request.session['isAuthenticated'] = False
     request.session['role'] = None
     if(request.method == "GET"):
-        return render(request,"facultyLogin.html")
+        return render(request,"Login.html",{ 'role':'Faculty'})
     elif(request.method == "POST"):
-        entered_id = request.POST.get("facultyid")
+        entered_id = request.POST.get("Facultyid")
         entered_password = request.POST.get("password")
-        actual_password,cols = db.retrieve_data('coredb.sqlite','FACULTY',['facultyPassword'],'facultyID = '+ entered_id)
-        print(actual_password)
+        actual_password,cols = db.retrieve_data('coredb.sqlite','FACULTY',['facultyPassword','facultyName'],'facultyID = '+ entered_id)
         if entered_password == actual_password[0][0]:
             request.session['isAuthenticated'] = True
             request.session['role']="faculty"
             request.session['facultyId'] = entered_id
+            request.session['facultyName'] = actual_password[0][1]
             return HttpResponseRedirect('faculty-dashboard')
         else:
             wrong['title'] ='Failure'
@@ -52,7 +52,7 @@ def facultyDashboard(request):
             wrong['title'] ='Failure'
             wrong['message'] = "Access Blocked"
             return render(request,'messenger.html',wrong)
-    return render(request,'facultyHome.html')
+    return render(request,'facultyDashboard.html',{'name':request.session['facultyName']})
 
 # GET @/faculty/logout  ---> LOGOUT
 def logout(request):
@@ -141,20 +141,24 @@ def viewCourses(request):
      courses,cols = db.retrieve_data('coredb.sqlite','MAPPING',['*'],'FACULTYID = '+str(request.session['facultyId']))
      classes = []
      subjects = []
+     classId = []
      for course in courses:
          classi = course[2]
          subject = course[1]
          subject,cols = db.retrieve_data('coredb.sqlite','COURSE',['subjectname'],'SUBJECTID ='+str(subject))
          classi,cols = db.retrieve_data('coredb.sqlite','CLASSROOM',['year','department','section'],'CLASSID ='+str(classi))
          class_name = " ".join(classi[0])
-         print(class_name)
          classes.append(class_name)
          subjects.append(subject[0][0])
+         classId.append(str(classi))
      context  = []
      for i in range(len(classes)):
          k = {}
          k['classname'] = classes[i]
-         k['subject'] = subject[i][0]
+         k['subject'] = subjects[i]
+         k['classId'] = classId[i]
+         k['facultyId'] = request.session['facultyId']
+         k['dateAndTime'] = datetime.today()
          context.append(k)
      return render(request,'viewCourses.html',{'courses':context})
 
