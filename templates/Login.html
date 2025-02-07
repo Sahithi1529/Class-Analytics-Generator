@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login::{{role}}</title>
+    <link rel="stylesheet" href="/static/stylesheets/Login.css">
+</head>
+<body>
+    <div class="login-container">
+        <h1>{{role}} Login</h1>
+        <form method="post" action="#">
+            {% csrf_token %}
+            <div class="input-group">
+                <input placeholder="{{role}} ID" name="{{role}}id" type="text" required>
+                <div class="password-container">
+                    <input placeholder="Password" name="password" type="password" required>
+                    <span class="toggle-password">Show</span>
+                </div>
+            </div>
+            <button type="submit">Login</button>
+        </form>
+    </div>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <script src="/static/scripts/Login.js"></script>
+</body>
+</html>

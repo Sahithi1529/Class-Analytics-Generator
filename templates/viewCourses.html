@@ -1,25 +1,33 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>View Courses</title>
-</head>
-<body>
-    <table>
-        <tr>
-            <th>Class Name</th>
-            <th>Subject</th>
-            <!-- <th>Start Tracking Students</th> -->
-        </tr>
-        {% for course in courses %}
-        <tr>
-            <td>{{course.classname}}</td>
-            <td>{{course.subject}}</td>
-            <!-- <td><a href="/intelligence?{{course.classId}}">Start Session</a></td> -->
-        </tr>
+{% extends 'facultyNav.html' %}
 
-        {% endfor %}
-    </table>
-</body>
-</html>
+{% block title%}
+<title>My Courses</title>
+{% endblock %}
+
+{% block link%}
+<link rel="stylesheet" href="/static/stylesheets/courses.css">
+{% endblock %}
+
+{% block body %}
+    <div class="courses-container">
+        <h1>Courses</h1>
+        <table>
+            <tr>
+                <th>Classroom</th>
+                <th>Subject</th>
+                <th>Start analytics generation</th>
+            </tr>
+            {% for course in courses %}
+            <tr>
+                <td>{{course.classname}}</td>
+                <td>{{course.subject}}</td>
+                <td><a href="/intelligence/start-tracking?classId={{course.classId}}&facultyId={{course.facultyId}}&dateAndTime={{course.dateAndTime}}">Start Session</a></td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+{% endblock %}
+
+{% block script%}
+<script src="/static/scripts/courses.js"></script>
+{% endblock %}

@@ -1,0 +1,117 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body {
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: linear-gradient(120deg, #e0c3fc 0%, #8ec5fc 100%);
+}
+
+.login-container {
+    background: rgba(255, 255, 255, 0.9);
+    padding: 40px;
+    border-radius: 20px;
+    backdrop-filter: blur(10px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 400px;
+    opacity: 0;
+    /* Initial opacity for animation */
+}
+
+h1 {
+    color: #2c3e50;
+    text-align: center;
+    margin-bottom: 30px;
+    font-size: 2em;
+    background: linear-gradient(45deg, #667eea, #764ba2);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.input-group {
+    margin-bottom: 20px;
+}
+
+input {
+    width: 100%;
+    padding: 15px;
+    border: 2px solid transparent;
+    background: rgba(236, 240, 243, 0.8);
+    border-radius: 10px;
+    color: #2c3e50;
+    font-size: 16px;
+    transition: all 0.3s ease;
+    margin-bottom: 15px;
+    opacity: 0;
+    /* Start hidden for animation */
+    transform: translateX(-30px);
+    /* Move left initially */
+}
+
+input::placeholder {
+    color: #95a5a6;
+}
+
+input:focus {
+    outline: none;
+    border: 2px solid #8ec5fc;
+    background: white;
+    transform: scale(1.02);
+    box-shadow: 0 5px 15px rgba(142, 197, 252, 0.3);
+}
+
+button {
+    width: 100%;
+    padding: 15px;
+    border: none;
+    border-radius: 10px;
+    background: linear-gradient(45deg, #667eea, #764ba2);
+    color: white;
+    font-size: 16px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    opacity: 0;
+    /* Hide initially */
+    transform: scale(0.8);
+    box-shadow: 0 5px 15px rgba(102, 126, 234, 0.2);
+}
+
+button:hover {
+    background: linear-gradient(45deg, #764ba2, #667eea);
+    transform: scale(1.05);
+    box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3);
+}
+
+.password-container {
+    position: relative;
+    width: 100%;
+}
+
+.toggle-password {
+    position: absolute;
+    right: 15px;
+    top: 50%;
+    transform: translateY(-90%);
+    cursor: pointer;
+    color: #95a5a6;
+    user-select: none;
+    font-size: 14px;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    text-transform: uppercase;
+    font-weight: 600;
+    z-index: 1;
+}
+
+.toggle-password:hover {
+    opacity: 1;
+    color: #667eea;
+}

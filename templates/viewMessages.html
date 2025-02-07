@@ -3,25 +3,102 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>View Messages</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            min-height: 100vh;
+            display: flex;
+            justify-content: flex-start;
+            align-items: center;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            margin: 0;
+            padding: 20px;
+            flex-direction: column;
+            padding-top: 50px;
+        }
+
+        .messages-container {
+            background: white;
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            width: 90%;
+            max-width: 1000px;
+            opacity: 0;
+            transform: translateY(20px);
+            margin-top: 20px;
+        }
+
+        h1 {
+            text-align: center;
+            color: #4a5568;
+            margin-bottom: 1.5rem;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            opacity: 0;
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        th {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f8fafc;
+        }
+
+        tr:hover {
+            background-color: #edf2f7;
+            transition: background-color 0.3s ease;
+        }
+    </style>
 </head>
 <body>
-    <table>
-        <tr>
-            <th>Sender</th>
-            <th>Date</th>
-            <th>Time</th>
-            <th>Message</th>
-        </tr>
-        {% for row in messages %}
-        <tr>
-            <td>{{row.sender}}</td>
-            <td>{{row.date}}</td>
-            <td>{{row.time}}</td>
-            <td>{{row.message}}</td>
-        </tr>
-        {% endfor %}
+    <div class="messages-container">
+        <h1>Messages</h1>
+        <table>
+            <tr>
+                <th>Sender</th>
+                <th>Date</th>
+                <th>Time</th>
+                <th>Message</th>
+            </tr>
+            {% for row in messages %}
+            <tr>
+                <td>{{row.sender}}</td>
+                <td>{{row.date}}</td>
+                <td>{{row.time}}</td>
+                <td>{{row.message}}</td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
 
-    </table>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <script>
+        gsap.to('.messages-container', {
+            opacity: 1,
+            y: 0,
+            duration: 1.2,
+            ease: 'power2.out',
+        });
+
+        gsap.to('table', {
+            opacity: 1,
+            duration: 1,
+            delay: 0.4,
+            ease: 'power2.out',
+        });
+    </script>
 </body>
 </html>
