@@ -64,7 +64,7 @@ import database_operations as db
 # INSERT INTO ADMIN
 # db.insert_into_table('coredb.sqlite','ADMIN',[[101,'Karthik','21eg106b26@anurag.edu.in','test@123','AI','9999999999']])
 # FETCH DATA FROM ADMIN
-# print(db.retrieve_data('coredb.sqlite','ADMIN'))
+print(db.retrieve_data('coredb.sqlite','ADMIN'))
 
 # INSERT INTO FACULTY
 # db.insert_into_table('coredb.sqlite','FACULTY',[[201,'Vishwas','21eg106b38@anurag.edu.in','3814316','CSE','8888888888']])
@@ -72,16 +72,16 @@ import database_operations as db
 # print(db.retrieve_data('coredb.sqlite','FACULTY'))
 
 # INSERT INTO CLASSROOM
-db.insert_into_table('coredb.sqlite','CLASSROOM',[['AI','IV','A',302]])
-# # FETCH DATA FROM CLASSROOM
-print(db.retrieve_data('coredb.sqlite','CLASSROOM'))
+# db.insert_into_table('coredb.sqlite','CLASSROOM',[['AI','IV','A',302]])
+# # # FETCH DATA FROM CLASSROOM
+# print(db.retrieve_data('coredb.sqlite','CLASSROOM'))
 
 # INSERT INTO COURSE
-db.insert_into_table('coredb.sqlite','COURSE',[[402,'Machine Learning']])
-# # # FETCH DATA FROM COURSE
-print(db.retrieve_data('coredb.sqlite','COURSE'))
+# db.insert_into_table('coredb.sqlite','COURSE',[[402,'Machine Learning']])
+# # # # FETCH DATA FROM COURSE
+# print(db.retrieve_data('coredb.sqlite','COURSE'))
 
 # INSERT INTO MAPPING
-db.insert_into_table('coredb.sqlite','MAPPING',[[201,402,302]])
-# # # FETCH DATA FROM MAPPING
-print(db.retrieve_data('coredb.sqlite','MAPPING'))
+# db.insert_into_table('coredb.sqlite','MAPPING',[[201,402,302]])
+# # # # FETCH DATA FROM MAPPING
+# print(db.retrieve_data('coredb.sqlite','MAPPING'))

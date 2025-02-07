@@ -20,6 +20,7 @@
             align-items: center;
             background: linear-gradient(120deg, #e0c3fc 0%, #8ec5fc 100%);
             padding-top: 80px;
+            opacity: 0;
         }
 
         #nav-bar {
@@ -35,12 +36,16 @@
             top: 10px;
             left: 50%;
             transform: translateX(-50%);
+            opacity: 0;
+            z-index: 100;
         }
 
         #nav-bar li {
             margin: 0 15px;
             font-size: 16px;
             font-weight: 500;
+            opacity: 0;
+            transform: translateY(-20px);
         }
 
         #nav-bar a {
@@ -68,6 +73,39 @@
             max-width: 400px;
             text-align: center;
             backdrop-filter: blur(10px);
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 1000;
+        }
+
+        .upload-btn {
+            padding: 20px 40px;
+            border-radius: 15px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin: 20px;
+            border: none;
+            color: white;
+            opacity: 0;
+            transform: translateY(50px);
+        }
+
+        .csv-btn {
+            background: linear-gradient(45deg, #FF6B6B, #FF8E53);
+        }
+
+        .model-btn {
+            background: linear-gradient(45deg, #4facfe, #00f2fe);
+        }
+
+        .upload-btn:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
         }
 
         .form-container h2 {
@@ -75,41 +113,47 @@
             color: #2c3e50;
         }
 
-        input[type="file"] {
+        .drop-zone {
             width: 100%;
-            padding: 12px;
-            border: 2px solid transparent;
-            background: rgba(236, 240, 243, 0.8);
-            border-radius: 8px;
-            color: #2c3e50;
-            font-size: 16px;
-            transition: all 0.3s ease;
-        }
-
-        input[type="file"]:focus {
-            border-color: #8ec5fc;
-            background: white;
-            box-shadow: 0 5px 15px rgba(142, 197, 252, 0.3);
-        }
-
-        button {
-            width: 100%;
-            padding: 12px;
-            border: none;
-            border-radius: 8px;
-            background: linear-gradient(45deg, #667eea, #764ba2);
-            color: white;
-            font-size: 16px;
+            height: 200px;
+            border: 3px dashed #ccc;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
             cursor: pointer;
             transition: all 0.3s ease;
-            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.2);
-            margin-top: 10px;
         }
 
-        button:hover {
-            background: linear-gradient(45deg, #764ba2, #667eea);
-            transform: scale(1.05);
-            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3);
+        .csv-drop {
+            background: rgba(255, 107, 107, 0.1);
+        }
+
+        .model-drop {
+            background: rgba(79, 172, 254, 0.1);
+        }
+
+        .drop-zone.dragover {
+            background: rgba(255, 255, 255, 0.9);
+            border-color: #4facfe;
+        }
+
+        .drop-zone p {
+            font-size: 16px;
+            color: #666;
+            margin: 10px 0;
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: none;
+            border: none;
+            font-size: 20px;
+            cursor: pointer;
+            color: #666;
         }
 
         h1 {
@@ -121,10 +165,26 @@
             -webkit-background-clip: text;
             background-clip: text;
             -webkit-text-fill-color: transparent;
+            opacity: 0;
+            transform: scale(0.8);
+        }
+
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(5px);
+            opacity: 0;
+            display: none;
+            z-index: 999;
         }
     </style>
 </head>
 <body>
+    <div class="overlay" id="overlay"></div>
 
     <!-- Navigation Bar -->
     <ul id="nav-bar">
@@ -138,27 +198,41 @@
     
     <h1>Welcome, {{ Name }}</h1>
     
-    <div style="display: flex; justify-content: center; gap: 20px;">
-        <!-- CSV Data Upload Form -->
-        <div class="form-container">
+    <div style="display: flex; justify-content: center; gap: 20px; flex-wrap: wrap;">
+        <button class="upload-btn csv-btn" onclick="showUploadForm('csv')">Upload CSV Data</button>
+        <button class="upload-btn model-btn" onclick="showUploadForm('model')">Upload Model</button>
+        
+        <!-- CSV Upload Form -->
+        <div id="csvForm" class="form-container">
+            <button class="close-btn" onclick="hideUploadForm('csv')">&times;</button>
             <h2>Upload CSV Data</h2>
             <form action="add-data-via-csv" method="post" enctype="multipart/form-data">
                 {% csrf_token %}
-                <input type="file" name="csvfile" accept=".csv">
-                <button type="submit">Upload CSV</button>
+                <div class="drop-zone csv-drop" id="csvDropZone">
+                    <p>Drag & Drop CSV file here</p>
+                    <p>or</p>
+                    <p>Click to select file</p>
+                    <input type="file" name="csvfile" accept=".csv" style="display: none" id="csvInput">
+                </div>
             </form>
         </div>
 
         <!-- Model Upload Form -->
-        <div class="form-container">
+        <div id="modelForm" class="form-container">
+            <button class="close-btn" onclick="hideUploadForm('model')">&times;</button>
             <h2>Upload Model</h2>
             <form action="update-model" method="post" enctype="multipart/form-data">
                 {% csrf_token %}
-                <input type="file" name="model">
-                <button type="submit">Upload Model</button>
+                <div class="drop-zone model-drop" id="modelDropZone">
+                    <p>Drag & Drop model file here</p>
+                    <p>or</p>
+                    <p>Click to select file</p>
+                    <input type="file" name="model" style="display: none" id="modelInput">
+                </div>
             </form>
         </div>
-        <div class="form-container">
+
+        <div class="form-container" style="display: block;">
             <form action="/administrator/send-message" method="post">
                 {%csrf_token%}
                 <label>Maximum Message Size is 99</label>
@@ -168,46 +242,125 @@
             </form>
         </div>
     </div>
-    
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
     <script>
-        // GSAP Animations
-        window.addEventListener('DOMContentLoaded', () => {
-            gsap.from("#nav-bar li", {
-                duration: 1,
-                opacity: 0,
-                y: -20,
-                stagger: 0.2,
+        // Show/Hide Upload Forms
+        function showUploadForm(type) {
+            const form = document.getElementById(type + 'Form');
+            const overlay = document.getElementById('overlay');
+            
+            overlay.style.display = 'block';
+            form.style.display = 'block';
+            
+            gsap.to(overlay, {
+                opacity: 1,
+                duration: 0.3,
                 ease: "power2.out"
             });
+            
+            gsap.fromTo(form, 
+                {
+                    opacity: 0,
+                    y: -50,
+                    scale: 0.8
+                },
+                {
+                    opacity: 1,
+                    y: 0,
+                    scale: 1,
+                    duration: 0.5,
+                    ease: "back.out(1.7)"
+                }
+            );
+        }
 
-            gsap.from(".form-container", {
-                duration: 1,
+        function hideUploadForm(type) {
+            const form = document.getElementById(type + 'Form');
+            const overlay = document.getElementById('overlay');
+            
+            gsap.to([form, overlay], {
                 opacity: 0,
-                y: 50,
-                delay: 0.5,
-                ease: "power2.out",
-                stagger: 0.3
+                duration: 0.3,
+                ease: "power2.in",
+                onComplete: () => {
+                    form.style.display = 'none';
+                    overlay.style.display = 'none';
+                    gsap.set(form, {clearProps: "all"});
+                }
+            });
+        }
+
+        // Drag and Drop functionality
+        ['csv', 'model'].forEach(type => {
+            const dropZone = document.getElementById(type + 'DropZone');
+            const input = document.getElementById(type + 'Input');
+
+            dropZone.addEventListener('click', () => input.click());
+
+            dropZone.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                dropZone.classList.add('dragover');
             });
 
-            gsap.from("h1", {
-                duration: 1,
-                opacity: 0,
-                scale: 0.8,
-                delay: 1,
-                ease: "back.out(1.5)"
+            dropZone.addEventListener('dragleave', () => {
+                dropZone.classList.remove('dragover');
+            });
+
+            dropZone.addEventListener('drop', (e) => {
+                e.preventDefault();
+                dropZone.classList.remove('dragover');
+                input.files = e.dataTransfer.files;
+                if(input.files.length > 0) {
+                    input.form.submit();
+                }
             });
         });
 
-        // Input field animations
-        document.querySelectorAll('input[type="file"]').forEach(input => {
-            input.addEventListener('focus', () => {
-                gsap.to(input, { scale: 1.02, duration: 0.3, ease: "power2.out" });
+        // GSAP Animations
+        document.addEventListener('DOMContentLoaded', () => {
+            // Initial body fade in
+            gsap.to('body', {
+                opacity: 1,
+                duration: 0.5,
+                ease: "power2.out"
             });
 
-            input.addEventListener('blur', () => {
-                gsap.to(input, { scale: 1, duration: 0.3, ease: "power2.out" });
+            // Navbar animation
+            gsap.to('#nav-bar', {
+                opacity: 1,
+                duration: 0.8,
+                delay: 0.2,
+                ease: "power2.out"
+            });
+
+            // Nav items animation
+            gsap.to('#nav-bar li', {
+                opacity: 1,
+                y: 0,
+                duration: 0.8,
+                stagger: 0.1,
+                delay: 0.4,
+                ease: "power2.out"
+            });
+
+            // Title animation
+            gsap.to('h1', {
+                opacity: 1,
+                scale: 1,
+                duration: 1,
+                delay: 0.6,
+                ease: "back.out(1.7)"
+            });
+
+            // Upload buttons animation
+            gsap.to('.upload-btn', {
+                opacity: 1,
+                y: 0,
+                duration: 0.8,
+                stagger: 0.2,
+                delay: 0.8,
+                ease: "back.out(1.7)"
             });
         });
     </script>

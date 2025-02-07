@@ -22,5 +22,6 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('faculty/',include('faculty.urls')),
     path('administrator/',include('administrator.urls')),
+    path('intelligence/',include('intelligence.urls')),
     path("",facultyViews.reDirect)
 ]

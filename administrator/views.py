@@ -6,6 +6,20 @@ import os
 from Class_Analytics_Generator import settings
 from django.core.files.storage import FileSystemStorage
 from datetime import datetime
+correct = {
+    'message':"",
+    'description':"",
+    'title':"",
+    'color':"green",
+    "iconCode":"#10003"
+}
+wrong = {
+    'message':"",
+    'description':"",
+    'title':"",
+    'color':"#f92f60",
+    "iconCode":"#10060"
+}
 # Create your views here.
 def Login(request):
     request.session['isAuthenticated'] = False
@@ -23,7 +37,9 @@ def Login(request):
             request.session['adminId'] = entered_id
             return HttpResponseRedirect('admin-dashboard')
         else:
-            return render(request,'messenger.html',{'title':"Failure","message":"Invalid Credentials"})
+            wrong['title'] ='Failure'
+            wrong['message'] = "Invalid Credentials"
+            return render(request,'messenger.html',wrong)
 
 # Test Path
 def Test(request):
@@ -41,24 +57,31 @@ def viewData(request):
 # POST @/administrator/update-model  ---> UPDATE THE PREDICTING MODEL
 def updateModel(request):
     if request.method!='POST':
-        return HttpResponse("Not Allowed")
+        wrong['title'] ='Failure'
+        wrong['message'] = "Only POST Requests are allowed"
+        return render(request,'messenger.html',wrong)
     new_model = request.FILES['model']
-    # os.rename(new_model,str(settings.BASE_DIR)+'/predictormodel.csv')
-    FileSystemStorage(location=settings.BASE_DIR).save(new_model.name, new_model)
-    return HttpResponse("Model Updated Successfully")
+    FileSystemStorage(location=os.path.join(settings.BASE_DIR,'static','resources')).save(new_model.name, new_model)
+    correct['title'] ='Success'
+    correct['message'] = "Model Updated Successfully"
+    return render(request,'messenger.html',correct)
     
 # GET @/administrator/admin-dashboard   ---> ADMIN DASHBOARD
 def adminDashboard(request):
     if not request.session['isAuthenticated'] or request.session['role']!='admin':
         request.session['isAuthenticated'] - False
         request.session['role'] = None
-        return HttpResponse("Access Blockeed")
+        wrong['title'] ='Failure'
+        wrong['message'] = "Access Blockeed"
+        return render(request,'messenger.html',wrong)
     return render(request,'adminHome.html')
 
 # GET @/administrator/logout  ---> LOGOUT
 def logout(request):
     if request.method != 'GET':
-        return HttpResponse("Accessing URL is allowed only with GET request")
+        wrong['title'] ='Failure'
+        wrong['message'] = "Accessing URL is allowed only with GET request"
+        return render(request,'messenger.html',wrong)
     request.session['isAuthenticated'] = False
     request.session['role'] = None
     return HttpResponseRedirect('/administrator/')
@@ -67,46 +90,66 @@ def logout(request):
 # POST @/administrator/add-faculty-via-csv  ---> ADD FACULTY DATA FROM CSV
 def addFacultyViaCSV(request):
     if request.method !='POST':
-        return HttpResponse("Not Allowed!")
+        wrong['title'] ='Failure'
+        wrong['message'] = "Not Allowed!"
+        return render(request,'messenger.html',wrong)
     if request.session['isAuthenticated'] and request.session['role']=='admin':
         try:
            db.insert_into_table_from_file('coredb.sqlite','FACULTY',request.FILES['csvfile'])
         except:
-            return HttpResponse("Sorry, unexpected error occured")
-        return HttpResponse("Added Faculty Successfully!")
+            wrong['title'] ='Failure'
+            wrong['message'] = "Sorry, unexpected error occured"
+            return render(request,'messenger.html',wrong)
+        correct['title'] ='Success'
+        correct['message'] = "Added Faculty Successfully"
+        return render(request,'messenger.html',correct)
     
 
 # POST @/administrator/add-admin-via-csv  ---> ADD ADMIN DATA FROM CSV
 def addAdminViaCSV(request):
     if request.method !='POST':
-        return HttpResponse("Not Allowed!")
+        wrong['title'] ='Failure'
+        wrong['message'] = "Not Allowed!"
+        return render(request,'messenger.html',wrong)
     if request.session['isAuthenticated'] and request.session['role']=='admin':
         try:
            db.insert_into_table_from_file('coredb.sqlite','ADMIN',request.FILES['csvfile'])
         except:
-            return HttpResponse("Sorry, unexpected error occured")
-        return HttpResponse("Added Admins Successfully!")
+            wrong['title'] ='Failure'
+            wrong['message'] = "Sorry, unexpected error occured"
+            return render(request,'messenger.html',wrong)
+        correct['title'] ='Success'
+        correct['message'] = "Added Admin Successfully"
+        return render(request,'messenger.html',correct)
         
         
 
 # GET @/adiministrator/download-data  ---> DOWNLOAD FACULTY DATA
 def downloadData(request):
     if request.method !='GET':
-        return render(request,'messenger.html',{"title":"Prohibited","message":"Prohibited"})
+        wrong['title'] ='Prohibited'
+        wrong['message'] = "Prohibited"
+        return render(request,'messenger.html',wrong)
     if request.session['isAuthenticated'] and request.session['role']=='admin':
         # User Allowed to Download the data
-        db.download_data_as_csv('coredb.sqlite','ADMIN','static/faculty.csv')
+        db.download_data_as_csv('coredb.sqlite','ADMIN',os.path.join(settings.BASE_DIR,'static','resources','faculty.csv'))
         return render(request,'forDownload.html')
     else:
         # User not Allowed o Download the data
-        return render(request,'messenger.html',{'title':"Download prohibited",'message':"You cannot download the file"})
+        wrong['title'] ='Download prohibited'
+        wrong['message'] = "You cannot download the file"
+        return render(request,'messenger.html',wrong)
     
 # GET @/administrator/view-messages  ---> SEE MESSAGES IN INBOX
 def viewMessages(request):
      if not request.session['isAuthenticated'] or request.session['role']!='admin':
-        return HttpResponse("Access Blocked")
+        wrong['title'] ='Failure'
+        wrong['message'] = "Access Blocked!"
+        return render(request,'messenger.html',wrong)
      if request.method !='GET':
-         return HttpResponse("Only GET Requests are accepted")
+        wrong['title'] ='Failure'
+        wrong['message'] = "Only GET Requests are accepted"
+        return render(request,'messenger.html',wrong)
      try:
          rows,cols = db.retrieve_data('coredb.sqlite','MESSAGES',['SenderId','SentDate','SentTime','Message'],'ReceiverId = '+ str(request.session['adminId']))
          context = []
@@ -120,14 +163,20 @@ def viewMessages(request):
          return render(request,'viewMessages.html',{'messages':context})
      except Exception as e:
          print(f"Exception '{e}' Occured")
-         return HttpResponse("Sorry Try again!!")
+         wrong['title'] ='Failure'
+         wrong['message'] = "Sorry Try again!!"
+         return render(request,'messenger.html',wrong)
      
 # POST @/administrator/send-message  ---> SEND MESSAGE TO THE ADMIN
 def sendMessage(request):
      if not request.session['isAuthenticated'] or request.session['role']!='admin':
-        return HttpResponse("Access Blocked")
+        wrong['title'] ='Failure'
+        wrong['message'] = "Access Blocked!"
+        return render(request,'messenger.html',wrong)
      if request.method !='POST':
-         return HttpResponse("Only Post Requests are accepted")
+        wrong['title'] ='Failure'
+        wrong['message'] = "Only POST Requests are accepted"
+        return render(request,'messenger.html',wrong)
      message = request.POST.get('message')
      sender = request.session['adminId']
      receiver = request.POST.get('receiverId')
@@ -138,20 +187,30 @@ def sendMessage(request):
      rows = [[int(sender),int(receiver),date,time,message]]
      try:
          if db.insert_into_table('coredb.sqlite','MESSAGES',rows):
-            return HttpResponse("Message Sent Successfully")
+            correct['title'] ='Message Sent'
+            correct['message'] = "Message Sent Successfully!!"
+            return render(request,'messenger.html',correct)
          else:
-            return HttpResponse("Message is not sent")
+            wrong['title'] ='Failure'
+            wrong['message'] = "Message Not Sent"
+            return render(request,'messenger.html',wrong)
      
      except Exception as e:
          print(f"Exception '{e}' Occurred when inserting data into Messages")
-         return HttpResponse("Message is not sent")
+         wrong['title'] ='Failure'
+         wrong['message'] = "Message Not Sent"
+         return render(request,'messenger.html',wrong)
      
 # GET @/administrator/view-faculty   ---> DISPLAY FACULTY LIST
 def viewFaculty(request):
      if not request.session['isAuthenticated'] or request.session['role']!='admin':
-        return HttpResponse("Access Blocked")
+        wrong['title'] ='Failure'
+        wrong['message'] = "Access Blocked"
+        return render(request,'messenger.html',wrong)
      if request.method !='GET':
-         return HttpResponse("Only Get Requests are accepted")
+         wrong['title'] ='Failure'
+         wrong['message'] = "Only GET requests are accepted"
+         return render(request,'messenger.html',wrong)
      faculty,cols = db.retrieve_data('coredb.sqlite','FACULTY',['FacultyId','FacultyName','FacultyDepartment'])
      context = []
      for (fid,fname,fdept) in faculty:
@@ -162,3 +221,60 @@ def viewFaculty(request):
          k['generate'] = '/administrator/generate-analytics?'+str(fid)
          context.append(k)
      return render(request,'viewFaculty.html',{'context':context})
+
+# GET @/administrator/update-manually ---> UPDATE DATABASE MANUALLY
+def updateManually(request):
+    if not request.session['isAuthenticated'] or request.session['role']!='admin':
+        wrong['title'] ='Failure'
+        wrong['message'] = "Access Blocked"
+        return render(request,'messenger.html',wrong)
+    
+    if request.method !='GET':
+         wrong['title'] ='Failure'
+         wrong['message'] = "Only GET requests are accepted"
+         return render(request,'messenger.html',wrong)
+    
+    parameter = request.GET.get('updateWhat')
+    reference = {
+        'admin':['AdminId','AdminName','AdminEmail','AdminPassword','AdminDepartment','AdminPhone'],
+        'faculty':['FacultyId','FacultyName','FacultyEmail','FacultyPassword','FacultyDepartment','FacultyPhone'],
+        'classroom':['Department','Year','Section','Classid'],
+        'course':['Subjectid','Subjectname'],
+        'mapping':['Facultyid','Subjectid','Classid']
+    }
+    return render(request,'updateManually.html',{'fields':reference[parameter],'updateWhat':parameter})
+
+# POST @/administrator/updatethem
+def updateThem(request):
+    if not request.session['isAuthenticated'] or request.session['role']!='admin':
+        wrong['title'] ='Failure'
+        wrong['message'] = "Access Blocked"
+        return render(request,'messenger.html',wrong)
+    
+    if request.method !='POST':
+         wrong['title'] ='Failure'
+         wrong['message'] = "Only POST requests are accepted"
+         return render(request,'messenger.html',wrong)
+    reference = {
+        'admin':['AdminId','AdminName','AdminEmail','AdminPassword','AdminDepartment','AdminPhone'],
+        'faculty':['FacultyId','FacultyName','FacultyEmail','FacultyPassword','FacultyDepartment','FacultyPhone'],
+        'classroom':['Department','Year','Section','Classid'],
+        'course':['Subjectid','Subjectname'],
+        'mapping':['Facultyid','Subjectid','Classid']
+    }
+    parameter = request.POST.get('updateWhat')
+    columns = reference[parameter]
+    row = []
+    for i in columns:
+        row.append(request.POST.get(i))
+    try:
+        db.insert_into_table('coredb.sqlite',parameter,[row])
+        correct['title'] = "Success"
+        correct['message'] = parameter +" added Successfully!!"
+        return render(request,'messenger.html',correct)
+    except:
+        wrong['title'] = "failure"
+        wrong['message'] = "Unable to Add "+parameter
+        return render(request,'messenger.html',wrong)
+
+    

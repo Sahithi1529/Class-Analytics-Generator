@@ -2,7 +2,20 @@ from django.shortcuts import render
 from django.http import HttpResponse,HttpResponseRedirect
 import database_operations as db
 from datetime import datetime
-
+correct = {
+    'message':"",
+    'description':"",
+    'title':"",
+    'color':"green",
+    "iconCode":"#10003"
+}
+wrong = {
+    'message':"",
+    'description':"",
+    'title':"",
+    'color':"#f92f60",
+    "iconCode":"#10060"
+}
 # Create your views here.
 
 
@@ -29,18 +42,24 @@ def facultyLogin(request):
             request.session['facultyId'] = entered_id
             return HttpResponseRedirect('faculty-dashboard')
         else:
-            return render(request,'messenger.html',{'title':"Failure","message":"Invalid Credentials"})
-
+            wrong['title'] ='Failure'
+            wrong['message'] = "Invalid Credentials"
+            return render(request,'messenger.html',wrong)
+        
 # GET @/faculty/faculty-dashboard  ---> FACULTY DASHBOARD
 def facultyDashboard(request):
     if not request.session['isAuthenticated'] or request.session['role']!='faculty':
-        return HttpResponse("Access Blocked")
+            wrong['title'] ='Failure'
+            wrong['message'] = "Access Blocked"
+            return render(request,'messenger.html',wrong)
     return render(request,'facultyHome.html')
 
 # GET @/faculty/logout  ---> LOGOUT
 def logout(request):
     if request.method != 'GET':
-        return HttpResponse("Accessing URL is allowed only with GET request")
+            wrong['title'] ='Failure'
+            wrong['message'] = "Accessing URL is allowed only with GET request"
+            return render(request,'messenger.html',wrong)
     request.session['isAuthenticated'] = False
     request.session['role'] = None
     return HttpResponseRedirect('/faculty/')
@@ -48,9 +67,13 @@ def logout(request):
 # POST @/faculty/send-message  ---> SEND MESSAGE TO THE ADMIN
 def sendMessage(request):
      if not request.session['isAuthenticated'] or request.session['role']!='faculty':
-        return HttpResponse("Access Blocked")
+            wrong['title'] ='Failure'
+            wrong['message'] = "Access Blockec"
+            return render(request,'messenger.html',wrong)
      if request.method !='POST':
-         return HttpResponse("Only Post Requests are accepted")
+        wrong['title'] ='Failure'
+        wrong['message'] = "Only POST requests are accepted"
+        return render(request,'messenger.html',wrong)
      message = request.POST.get('message')
      sender = request.session['facultyId']
      receivers,cols = db.retrieve_data('coredb.sqlite','ADMIN',['adminId'])
@@ -63,20 +86,30 @@ def sendMessage(request):
      print(rows)
      try:
          if db.insert_into_table('coredb.sqlite','MESSAGES',rows):
-            return HttpResponse("Message Sent Successfully")
+            correct['title'] = "Success"
+            correct['message'] = "Message Sent Successfully!!"
+            return render(request,'messenger.html',correct)
          else:
-            return HttpResponse("Message is not sent")
+            wrong['title'] ='Failure'
+            wrong['message'] = "Message is not sent"
+            return render(request,'messenger.html',wrong)
      
      except Exception as e:
-         print(f"Exception '{e}' Occurred when inserting data into Messages")
-         return HttpResponse("Message is not sent")
+        print(f"Exception '{e}' Occurred when inserting data into Messages")
+        wrong['title'] ='Failure'
+        wrong['message'] = "Message is not sent"
+        return render(request,'messenger.html',wrong)
      
 # GET @/faculty/view-messages  ---> SEE MESSAGES IN INBOX
 def viewMessages(request):
      if not request.session['isAuthenticated'] or request.session['role']!='faculty':
-        return HttpResponse("Access Blocked")
+        wrong['title'] ='Failure'
+        wrong['message'] = "Access Blocked"
+        return render(request,'messenger.html',wrong)
      if request.method !='GET':
-         return HttpResponse("Only GET Requests are accepted")
+        wrong['title'] ='Failure'
+        wrong['message'] = "Only GET requests are accepted!!"
+        return render(request,'messenger.html',wrong)
      try:
          rows,cols = db.retrieve_data('coredb.sqlite','MESSAGES',['SenderId','SentDate','SentTime','Message'],'ReceiverId = '+ str(request.session['facultyId']))
          context = []
@@ -89,16 +122,22 @@ def viewMessages(request):
              context.append(k)
          return render(request,'viewMessages.html',{'messages':context})
      except Exception as e:
-         print(f"Exception '{e}' Occured")
-         return HttpResponse("Sorry Try again!!")
+        print(f"Exception '{e}' Occured")
+        wrong['title'] ='Failure'
+        wrong['message'] = "Sorry Try again!!"
+        return render(request,'messenger.html',wrong)
      
 
 # GET @/faculty/view-courses   ---> VIEW COURSES OF FACULTY
 def viewCourses(request):
      if not request.session['isAuthenticated'] or request.session['role']!='faculty':
-        return HttpResponse("Access Blocked")
+        wrong['title'] ='Failure'
+        wrong['message'] = "Access Blocked"
+        return render(request,'messenger.html',wrong)
      if request.method !='GET':
-         return HttpResponse("Only GET Requests are accepted")
+        wrong['title'] ='Failure'
+        wrong['message'] = "Only GET requests are accepted!!"
+        return render(request,'messenger.html',wrong)
      courses,cols = db.retrieve_data('coredb.sqlite','MAPPING',['*'],'FACULTYID = '+str(request.session['facultyId']))
      classes = []
      subjects = []
@@ -117,7 +156,6 @@ def viewCourses(request):
          k['classname'] = classes[i]
          k['subject'] = subject[i][0]
          context.append(k)
-        #  k[''] = subject[i]
      return render(request,'viewCourses.html',{'courses':context})
 
 

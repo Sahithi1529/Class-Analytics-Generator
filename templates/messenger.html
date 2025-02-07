@@ -4,8 +4,21 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{title}}</title>
+    <link rel="stylesheet" href="/static/stylesheets/messenger.css">
 </head>
 <body>
-    <h1>{{message}}</h1>
+    <div class="confirmation-container">
+        <i class="ticket-icon">&{{iconCode}};</i>
+        <h1 style="color: {{color}}">{{message}}</h1>
+        <div class="confirmation-message">
+            <p>{{description}}</p>
+        </div>
+        <a i class="cta-button" onclick="goback()">Go Back</a>
+    </div>
+    <script>
+        function goback(){
+            window.history.back();
+        }
+    </script>
 </body>
 </html>

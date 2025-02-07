@@ -12,6 +12,9 @@ urlpatterns = [
     path('view-messages',views.viewMessages),
     path('send-message',views.sendMessage),
     path('view-faculty',views.viewFaculty),
+    path('update-manually',views.updateManually), # Request @/administrator/update-manually
+    path('updatethem',views.updateThem)
+
 
 
 
