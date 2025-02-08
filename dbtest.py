@@ -1,14 +1,14 @@
 import database_operations as db
 
-# from datetime import datetime
-# curr = str(datetime.today()).split()
-# date = curr[0]
-# time = curr[1][:8]
+from datetime import datetime
+curr = str(datetime.today()).split()
+date = curr[0]
+time = curr[1][:8]
 # db.insert_into_table('coredb.sqlite','MESSAGES',[["101","102",date,time,"This is Message 1"]])
 # print(date,time)
 # print(db.retrieve_data('coredb.sqlite','FACULTY'))
 # con = db.connection_object('coredb.sqlite')
-# con.execute("DROP TABLE COURSES")
+# con.execute("DROP TABLE MAPPING")
 # con.commit()
 
 # ADMIN SCHEMA
@@ -58,13 +58,14 @@ import database_operations as db
 # db.create_table('coredb.sqlite','MAPPING',{
 #     'facultyId':'INT ',
 #     'subjectId':'INT',
-#     'classId':'INT, FOREIGN KEY(facultyId) REFERENCES FACULTY(facultyId), FOREIGN KEY(subjectId) REFERENCES COURSES(subjectId)',
+#     'classId':'INT', 
+#     'classDate': 'DATE, FOREIGN KEY(facultyId) REFERENCES FACULTY(facultyId), FOREIGN KEY(subjectId) REFERENCES COURSES(subjectId)',
 # })
 
 # INSERT INTO ADMIN
 # db.insert_into_table('coredb.sqlite','ADMIN',[[101,'Karthik','21eg106b26@anurag.edu.in','test@123','AI','9999999999']])
 # FETCH DATA FROM ADMIN
-print(db.retrieve_data('coredb.sqlite','ADMIN'))
+# print(db.retrieve_data('coredb.sqlite','ADMIN'))
 
 # INSERT INTO FACULTY
 # db.insert_into_table('coredb.sqlite','FACULTY',[[201,'Vishwas','21eg106b38@anurag.edu.in','3814316','CSE','8888888888']])
@@ -82,6 +83,11 @@ print(db.retrieve_data('coredb.sqlite','ADMIN'))
 # print(db.retrieve_data('coredb.sqlite','COURSE'))
 
 # INSERT INTO MAPPING
-# db.insert_into_table('coredb.sqlite','MAPPING',[[201,402,302]])
+# db.insert_into_table('coredb.sqlite','MAPPING',[[201,401,301,'2025-02-09'],[201,402,302,'2025-02-08']])
 # # # # FETCH DATA FROM MAPPING
 # print(db.retrieve_data('coredb.sqlite','MAPPING'))
+
+# con = db.connection_object('coredb.sqlite')
+# rows = con.execute(f"SELECT * FROM MAPPING WHERE FACULTYID = 201 AND CLASSDATE = '{date}'")
+# for row in rows:
+#     print(row)

@@ -139,7 +139,8 @@ def viewCourses(request):
         wrong['title'] ='Failure'
         wrong['message'] = "Only GET requests are accepted!!"
         return render(request,'messenger.html',wrong)
-     courses,cols = db.retrieve_data('coredb.sqlite','MAPPING',['*'],'FACULTYID = '+str(request.session['facultyId']))
+     date = str(datetime.today()).split()[0]
+     courses,cols = db.retrieve_data('coredb.sqlite','MAPPING',['*'],f"FACULTYID = {str(request.session['facultyId'])}  AND CLASSDATE = '{str(date)}'")
      classes = []
      subjects = []
      classId = []
@@ -159,9 +160,41 @@ def viewCourses(request):
          k['subject'] = subjects[i]
          k['classId'] = classId[i]
          k['facultyId'] = request.session['facultyId']
-         k['dateAndTime'] = str(datetime.today()).split()[0]
+         k['dateAndTime'] = date
          context.append(k)
      return render(request,'viewCourses.html',{'courses':context,'name':request.session['facultyName']})
+
+
+# POST @/faculty/update-password   -->  UPDATE THE FACULTY PASSWORD
+def updatePassword(request):
+    if not request.session['isAuthenticated'] or request.session['role']!='faculty':
+        wrong['title'] ='Failure'
+        wrong['message'] = "Access Blocked"
+        return render(request,'messenger.html',wrong)
+    if request.method !='POST':
+        wrong['title'] ='Failure'
+        wrong['message'] = "Only POST requests are accepted!!"
+        return render(request,'messenger.html',wrong)
+    entered_curr_password = request.POST.get('currentPassword')
+    entered_new_password = request.POST.get('newPassword')
+    actual_password,cols = db.retrieve_data('coredb.sqlite','FACULTY',['facultyPassword','facultyName'],'facultyID = '+ request.session['facultyId'])
+    if entered_curr_password == actual_password:
+        status = db.update_data('coredb.sqlite','FACULTY',{'facultyPassword':entered_new_password},' FACULTYID = '+str(request.session['facultyId']))
+        if status:
+            correct['title'] = "Success"
+            correct['message'] = "Password update successfully"
+            return render(request,'messenger.html',correct)
+        else:
+            wrong['title'] = "Failure"
+            wrong['message'] = "Sorry could not update password. Try Again"
+            return render(request,'messenger.html',wrong)
+
+    else:
+        wrong['title'] = "Failure"
+        wrong['message'] = "Please enter correct current password!!"
+        return render(request,'messenger.html',wrong)
+    
+
 
 
 

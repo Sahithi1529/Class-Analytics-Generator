@@ -11,6 +11,8 @@ import numpy as np
 import matplotlib.pyplot as plt
 import io
 from django.views.decorators import gzip
+class Flag:
+    flag = False
 correct = {
     'message':"",
     'description':"",
@@ -28,66 +30,27 @@ wrong = {
 
 def getGraph(request,filename):
    for i in range(12):
+     while(not Flag.flag):
+       pass
      dfe = pd.read_csv(os.path.join(settings.BASE_DIR,'static','resources',filename))
-     timestamps = dfe.iloc[:]['timeStamp']
-     values = {
-     'Engaged' : dfe.iloc[:]['Engaged'],
-     'Not Engaged' : dfe.iloc[:]['Not Engaged'],
-     'Total' : dfe.iloc[:]['total'],
-     }
-     x = np.arange(len(timestamps))  # the label locations
-     width = 0.25  # the width of the bars
-     multiplier = 0
-     fig, ax = plt.subplots(layout='constrained')
-     ref = {
-     'Engaged':"green",
-     "Not Engaged":"red",
-     "Total":"blue"
-     }
-
-     for attribute, measurement in values.items():
-          offset = width * multiplier
-          rects = ax.bar(x + offset, measurement, width, label=attribute,color=ref[attribute])
-          ax.bar_label(rects, padding=3)
-          multiplier += 1
-     # Add some text for labels, title and custom x-axis tick labels, etc.
-     ax.set_ylabel('Count of Students')
-     ax.set_title('Time Stamps')
-     ax.set_xticks(x + width, timestamps)
-     ax.legend(loc='upper left', ncols=3)
-     ax.set_ylim(0, 80)
+     row = dfe.iloc[i]
+     timestamps = row['timeStamp']
+     X = ["Engaged","Not Engaged","Total"]
+     Y = [row['Engaged'],row['Not Engaged'],row['total']]
+     plt.bar(X,Y,color=['green','red','blue'])
+     plt.title("Stats for Timestamp "+timestamps)
      buf = io.BytesIO()
      plt.savefig(buf, format="jpg")
      frame = buf.getvalue()
-     time.sleep(5)
-     if i==11:
-         correct['title'] = "Success"
-         correct['Message'] = "Class Analytics generated successfully"
-         return render(request,'messenger.html',correct)
      yield (b'--frame\r\n'
             b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n\r\n')
+     print(f"Generated bar for timestamps: {timestamps}")
 
 @gzip.gzip_page
 def showAnalytics(request):
      filename = request.GET.get('filename')
-     time.sleep(15)
      graph = getGraph(request,filename)
-     print("Hello")
      return StreamingHttpResponse(graph,content_type="multipart/x-mixed-replace;boundary=frame")
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -96,7 +59,6 @@ def startTracking(request):
      facultyId = request.GET.get('facultyId')
      dateAndTime = request.GET.get('dateAndTime')
      filename = classId+"-"+facultyId+"-"+dateAndTime+'.csv'
-     print(filename)
      return render(request,'liveAnalytics.html',{'filename':filename})
 
 
@@ -124,7 +86,9 @@ def generateAnalytics(request):
           else:
                dfe.to_csv(os.path.join(settings.BASE_DIR,'static','resources',filename),index=False,mode='a',header=False)
 
-          print(f"Analytics {i} Recorded")
+          Flag.flag = True
+          print(f"Analytics {i+1} Recorded")
+          Flag.flag = False
           time.sleep(takePictureForEvery)
      return HttpResponse("Sucess")
           

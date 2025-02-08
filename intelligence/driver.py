@@ -32,7 +32,7 @@ class Camera():
         resized_faces = []
         for frame in frames:
             resized_faces.append(cv.resize(frame,dimensions))
-        print("No of faces for resize",len(resized_faces))
+        # print("No of faces for resize",len(resized_faces))
         return resized_faces
     
     def detectFaces(self,frame):
@@ -41,7 +41,7 @@ class Camera():
         self.final_faces = []
         for (x,y,w,h) in self.faces:
          self.final_faces.append(frame[y:y+h,x:x+w])
-        print("No of faces detected are :",len(self.final_faces))
+        # print("No of faces detected are :",len(self.final_faces))
         return self.final_faces
     
 class Model():
@@ -56,7 +56,7 @@ class Model():
                 transforms.Normalize((0.5),(0.5))
             ]
         )
-        print("Came for preprocesing: ",len(frames))
+        # print("Came for preprocesing: ",len(frames))
         for frame in frames:
             preprocessed_frames.append(transformations(frame))
         return preprocessed_frames
@@ -71,7 +71,7 @@ class Model():
             'Not Engaged':[0],
             'total': [0]
         }
-        print("Came for Prediction",len(frames))
+        # print("Came for Prediction",len(frames))
         self.model.eval()
         # frame.to('cpu')
         for frame in frames:
