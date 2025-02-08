@@ -1,0 +1,72 @@
+{% extends 'adminNav.html' %}
+
+{% block title%}
+<title>Admin Dashboard</title>
+{% endblock %}
+
+{% block link%}
+<link rel="stylesheet" href="/static/stylesheets/adminDashboard.css">
+<!-- <link rel="stylesheet" href="/static/stylesheets/facultyDashboard.css"> -->
+{% endblock %}
+
+{% block profile%}
+{{name}}
+{% endblock %}
+{% block body %}
+<div class="overlay" id="overlay"></div>    
+<div class="main-content">
+    <h1>Welcome, {{ Name }}</h1>
+    
+    <div class="button-container">
+        <button class="upload-btn csv-btn" onclick="showUploadForm('csv')">Upload CSV Data</button>
+        <button class="upload-btn model-btn" onclick="showUploadForm('model')">Upload Model</button>
+    </div>
+
+    <!-- CSV Upload Form -->
+    <div id="csvForm" class="form-container">
+        <button class="close-btn" onclick="hideUploadForm('csv')">&times;</button>
+        <h2>Upload CSV Data</h2>
+        <form action="add-data-via-csv" method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="drop-zone csv-drop" id="csvDropZone">
+                <p>Drag & Drop CSV file here</p>
+                <p>or</p>
+                <p>Click to select file</p>
+                <input type="file" name="csvfile" accept=".csv" style="display: none" id="csvInput">
+                <p id="fileName" style="margin-top: 10px; font-weight: bold;"></p>
+            </div>
+        </form>
+    </div>
+
+    <!-- Model Upload Form -->
+    <div id="modelForm" class="form-container">
+        <button class="close-btn" onclick="hideUploadForm('model')">&times;</button>
+        <h2>Upload Model</h2>
+        <form action="update-model" method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="drop-zone model-drop" id="modelDropZone">
+                <p>Drag & Drop model file here</p>
+                <p>or</p>
+                <p>Click to select file</p>
+                <input type="file" name="model" style="display: none" id="modelInput">
+            </div>
+        </form>
+    </div>
+
+    <!-- Message Form -->
+    <div class="form-container message-form">
+        <h2>Send Message</h2>
+        <form action="/administrator/send-message" method="post">
+            {% csrf_token %}
+            <label>Maximum Message Size is 99 characters</label>
+            <input type="text" name="message" maxlength="99" placeholder="Enter your message">
+            <input type="text" name="receiverId" maxlength="3" placeholder="Enter receiver ID">
+            <input type="submit" value="Send Message">
+        </form>
+    </div>
+</div>
+{% endblock %}
+{% block script%}
+<script src="/static/scripts/adminDashboard.js"></script>
+<script src="/static/scripts/facultyDashboard.js"></script>
+{% endblock %}

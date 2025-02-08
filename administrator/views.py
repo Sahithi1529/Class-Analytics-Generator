@@ -25,16 +25,17 @@ def Login(request):
     request.session['isAuthenticated'] = False
     request.session['role'] = None
     if(request.method == "GET"):
-        return render(request,"adminLogin.html")
+        return render(request,"Login.html",{ 'role':'Admin'})
     elif(request.method == "POST"):
-        entered_id = request.POST.get("adminid")
+        entered_id = request.POST.get("Adminid")
         entered_password = request.POST.get("password")
-        actual_password,cols = db.retrieve_data('coredb.sqlite','ADMIN',['adminPassword'],'adminID = '+ entered_id)
+        actual_password,cols = db.retrieve_data('coredb.sqlite','ADMIN',['adminPassword','adminName'],'adminID = '+ entered_id)
         print(actual_password)
         if entered_password == actual_password[0][0]:
             request.session['isAuthenticated'] = True
             request.session['role']="admin"
             request.session['adminId'] = entered_id
+            request.session['adminName'] = actual_password[0][1]
             return HttpResponseRedirect('admin-dashboard')
         else:
             wrong['title'] ='Failure'
@@ -74,7 +75,7 @@ def adminDashboard(request):
         wrong['title'] ='Failure'
         wrong['message'] = "Access Blockeed"
         return render(request,'messenger.html',wrong)
-    return render(request,'adminHome.html')
+    return render(request,'adminDashboard.html',{'name':request.session['adminName']})
 
 # GET @/administrator/logout  ---> LOGOUT
 def logout(request):
@@ -160,7 +161,7 @@ def viewMessages(request):
              k['time'] = row[2]
              k['message'] = row[3]
              context.append(k)
-         return render(request,'viewMessages.html',{'messages':context})
+         return render(request,'viewMessages.html',{'messages':context,'name':request.session['adminName']})
      except Exception as e:
          print(f"Exception '{e}' Occured")
          wrong['title'] ='Failure'
@@ -220,7 +221,7 @@ def viewFaculty(request):
          k['facultyDepartment'] = fdept
          k['generate'] = '/administrator/generate-analytics?'+str(fid)
          context.append(k)
-     return render(request,'viewFaculty.html',{'context':context})
+     return render(request,'viewFaculty.html',{'context':context,'name':request.session['adminName']})
 
 # GET @/administrator/update-manually ---> UPDATE DATABASE MANUALLY
 def updateManually(request):

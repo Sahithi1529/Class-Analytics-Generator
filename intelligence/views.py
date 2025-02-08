@@ -70,7 +70,7 @@ def getGraph(request,filename):
 @gzip.gzip_page
 def showAnalytics(request):
      filename = request.GET.get('filename')
-     time.sleep(10)
+     time.sleep(15)
      graph = getGraph(request,filename)
      print("Hello")
      return StreamingHttpResponse(graph,content_type="multipart/x-mixed-replace;boundary=frame")
@@ -96,6 +96,7 @@ def startTracking(request):
      facultyId = request.GET.get('facultyId')
      dateAndTime = request.GET.get('dateAndTime')
      filename = classId+"-"+facultyId+"-"+dateAndTime+'.csv'
+     print(filename)
      return render(request,'liveAnalytics.html',{'filename':filename})
 
 
@@ -109,9 +110,10 @@ def generateAnalytics(request):
      totalFrames = totalDuration//takePictureForEvery
      for i in range(totalFrames):
           frame = cam.getFrame()
-          resized_frame = cam.resizeFrame(frame,(48,48))
-          preprocessed_frame = model.preprocess(resized_frame)
-          predictions = model.predict(preprocessed_frame)
+          faces = cam.detectFaces(frame)
+          resized_frame = cam.resizeFrame(faces,(48,48))
+          preprocessed_frames = model.preprocess(resized_frame)
+          predictions = model.predict(preprocessed_frames)
           predictions['class_Id'] = [classId]
           predictions['facultyId'] = [facultyId]
           curr = str(datetime.today()).split()

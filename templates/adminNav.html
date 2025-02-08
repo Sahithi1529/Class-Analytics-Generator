@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    {% block title%}
+    {% endblock %}
+
+    <link rel="stylesheet" href="/static/stylesheets/navBar.css">
+
+
+    {% block link%}
+    {% endblock %}
+</head>
+<body>
+    <ul id="nav-bar">
+        <li><a href="admin-dashboard">Home</a></li>
+        <li><a href="view-faculty">Faculty</a></li>
+        <li><a href="update">Manage Database</a></li>
+        <li><a href="#">Update Profile</a></li>
+        <li><a href="view-messages">Messages</a></li>
+        <li><a href="logout">Logout</a></li>
+        <li class="user-name">{% block profile%}{% endblock %}</li>
+    </ul>
+
+    <div id="particles-js"></div>
+    {% block body%}
+    {% endblock %}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+    <script src="/static/scripts/navBar.js"></script>
+
+    {% block script%}
+    {% endblock %}
+</body>
+</html>

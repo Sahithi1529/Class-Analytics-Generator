@@ -6,6 +6,12 @@
 
 {% block link%}
 <link rel="stylesheet" href="/static/stylesheets/courses.css">
+<link rel="stylesheet" href="/static/stylesheets/facultyDashboard.css">
+
+{% endblock %}
+
+{% block profile%}
+{{name}}
 {% endblock %}
 
 {% block body %}
@@ -21,7 +27,7 @@
             <tr>
                 <td>{{course.classname}}</td>
                 <td>{{course.subject}}</td>
-                <td><a href="/intelligence/start-tracking?classId={{course.classId}}&facultyId={{course.facultyId}}&dateAndTime={{course.dateAndTime}}">Start Session</a></td>
+                <td><a href="/intelligence/start-tracking?classId={{course.classId}}&facultyId={{course.facultyId}}&dateAndTime={{course.dateAndTime}}" class="start-session-btn">Start Session</a></td>
             </tr>
             {% endfor %}
         </table>

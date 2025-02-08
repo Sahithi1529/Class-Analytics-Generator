@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Update Database</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .container {
+            height: 100vh;
+            width: 100vw;
+            display: flex;
+            /* background-color: red; */
+        }
+
+        .left {
+            height: 100vh;
+            width: 50vw;
+            /* background-color: rgb(0, 68, 255); */
+        }
+
+        .right {
+            height: 100vh;
+            width: 50vw;
+            /* background-color: yellow; */
+            padding: 2px;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            width: 90%;
+            max-width: 600px;
+            margin: 20px 0;
+        }
+
+        .right h2 {
+            text-align: center;
+            color: #4a5568;
+            margin-bottom: 1.5rem;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 12px;
+            margin: 8px 0;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+
+        input[type="text"]:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 0 2px rgba(102, 126, 234, 0.2);
+            outline: none;
+        }
+
+        label {
+            display: block;
+            margin-top: 12px;
+            color: #4a5568;
+            font-weight: 500;
+        }
+
+        input[type="submit"] {
+            width: 100%;
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 20px;
+        }
+
+        input[type="submit"]:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        h1 {
+            text-align: center;
+            color: #4a5568;
+            margin-bottom: 1.5rem;
+            font-size: 2em;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .upload-btn {
+            padding: 20px 40px;
+            border-radius: 15px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin: 10px;
+            border: none;
+            color: white;
+            opacity: 1;
+            transform: translateY(50px);
+            min-width: 250px;
+        }
+
+        .csv-btn {
+            background: linear-gradient(45deg, #FF6B6B, #FF8E53);
+        }
+
+        .model-btn {
+            background: linear-gradient(45deg, #4facfe, #00f2fe);
+        }
+
+        .upload-btn:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+        }
+    </style>
+</head>
+
+<body>
+<div class="overlay" id="overlay"></div>
+    <div class="container">
+        <div class="left">
+            <h1>Update Database via File Upload</h1>
+            <div class="button-container">
+                <button class="upload-btn csv-btn" onclick="showUploadForm('csv')">Upload CSV Data</button>
+                <button class="upload-btn model-btn" onclick="showUploadForm('model')">Upload Model</button>
+            </div>
+            <div id="csvForm" style="display:none;">
+                <h2>Upload CSV File</h2>
+                <input type="file" id="csvInput" accept=".csv">
+                <button onclick="hideUploadForm('csv')">Cancel</button>
+            </div>
+            
+            <div id="modelForm" style="display:none;">
+                <h2>Upload Model File</h2>
+                <input type="file" id="modelInput" accept=".model">
+                <button onclick="hideUploadForm('model')">Cancel</button>
+            </div>
+        </div>
+        <div class="right">
+            <h1>Update Database Manually</h1>
+            <form action="/administrator/updatethem" method="post">
+                {% csrf_token %}
+                <label for="updateWhat">Update What:</label>
+                <input type="text" name="updateWhat" id="updateWhat" required>
+                {% for column in fields %}
+                <label>Enter {{ column }}</label>
+                <input type="text" name="{{ column }}">
+                {% endfor %}
+                <input type="submit" value="Submit">
+            </form>
+            
+            <!-- Add forms for CSV and Model uploads -->
+            
+        </div>
+    </div>
+</body>
+
+<script>
+    // Function to show the upload form
+function showUploadForm(type) {
+    console.log("Show upload form called for type:", type); // Debug log
+    const form = document.getElementById(type + 'Form');
+    const overlay = document.getElementById('overlay');
+
+    // Check if the form and overlay elements exist
+    if (!form || !overlay) {
+        console.error("Form or overlay not found!"); // Log error if elements are not found
+        return; // Exit the function if elements are not found
+    }
+
+    // Ensure the overlay is displayed
+    overlay.style.display = 'block';
+    form.style.display = 'block'; // Show form before animating
+
+    // GSAP animation for overlay
+    gsap.to(overlay, {
+        opacity: 0,
+        duration: 0.3,
+        ease: "power2.out"
+    });
+
+    // GSAP animation for the form
+    gsap.fromTo(form,
+        {
+            opacity: 0,
+            y: -50,
+            scale: 0.8
+        },
+        {
+            opacity: 1,
+            y: 0,
+            scale: 1,
+            duration: 0.5,
+            ease: "back.out(1.7)"
+        }
+    );
+}
+
+// Function to hide the upload form
+function hideUploadForm(type) {
+    const form = document.getElementById(type + 'Form');
+    const overlay = document.getElementById('overlay');
+
+    // Check if the form and overlay elements exist
+    if (!form || !overlay) {
+        console.error("Form or overlay not found!"); // Log error if elements are not found
+        return; // Exit the function if elements are not found
+    }
+
+    // GSAP animation for hiding the form and overlay
+    gsap.to([form, overlay], {
+        opacity: 0,
+        duration: 0.3,
+        ease: "power2.in",
+        onComplete: () => {
+            form.style.display = 'none'; // Hide form after animation
+            overlay.style.display = 'none'; // Hide overlay after animation
+            gsap.set(form, { clearProps: "all" }); // Clear any inline styles
+        }
+    });
+}
+
+// Ensure the script runs after the DOM is fully loaded
+document.addEventListener('DOMContentLoaded', () => {
+    // Drag and Drop functionality
+    ['csv', 'model'].forEach(type => {
+        const dropZone = document.getElementById(type + 'DropZone');
+        const input = document.getElementById(type + 'Input');
+        const fileNameDisplay = document.getElementById('fileName'); // Element to display the file name
+
+        dropZone.addEventListener('click', () => input.click());
+
+        dropZone.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            dropZone.classList.add('dragover');
+        });
+
+        dropZone.addEventListener('dragleave', () => {
+            dropZone.classList.remove('dragover');
+        });
+
+        dropZone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            dropZone.classList.remove('dragover');
+            input.files = e.dataTransfer.files;
+            if (input.files.length > 0) {
+                if (fileNameDisplay) { // Check if fileNameDisplay exists
+                    fileNameDisplay.textContent = `Uploaded File: ${input.files[0].name}`; // Display the file name
+                }
+                input.form.submit(); // Submit the form
+                hideUploadForm(type); // Automatically close the form after submission
+            }
+        });
+
+        // Display the file name when a file is selected
+        input.addEventListener('change', (e) => {
+            if (input.files.length > 0) {
+                if (fileNameDisplay) { // Check if fileNameDisplay exists
+                    fileNameDisplay.textContent = `Uploaded File: ${input.files[0].name}`; // Display the file name
+                }
+                input.form.submit(); // Submit the form
+                hideUploadForm(type); // Automatically close the form after submission
+            } else {
+                if (fileNameDisplay) { // Check if fileNameDisplay exists
+                    fileNameDisplay.textContent = ''; // Clear the display if no file is selected
+                }
+            }
+        });
+    });
+
+    // GSAP Animations for page load
+    // Initial body fade in
+    gsap.to('body', {
+        opacity: 1,
+        duration: 0.5,
+        ease: "power2.out"
+    });
+
+    // Navbar animation
+    gsap.to('#nav-bar', {
+        opacity: 1,
+        duration: 0.8,
+        delay: 0.2,
+        ease: "power2.out"
+    });
+
+    // Nav items animation
+    gsap.to('#nav-bar li', {
+        opacity: 1,
+        y: 0,
+        duration: 0.8,
+        stagger: 0.1,
+        delay: 0.4,
+        ease: "power2.out"
+    });
+
+    // Title animation
+    gsap.to('h1', {
+        opacity: 1,
+        scale: 1,
+        duration: 1,
+        delay: 0.6,
+        ease: "back.out(1.7)"
+    });
+
+    // Upload buttons animation
+    gsap.to('.upload-btn', {
+        opacity: 1,
+        y: 0,
+        duration: 0.8,
+        stagger: 0.2,
+        delay: 0.8,
+        ease: "back.out(1.7)"
+    });
+});
+</script>
+
+</html>

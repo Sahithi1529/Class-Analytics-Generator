@@ -111,7 +111,7 @@ def viewMessages(request):
         wrong['message'] = "Only GET requests are accepted!!"
         return render(request,'messenger.html',wrong)
      try:
-         rows,cols = db.retrieve_data('coredb.sqlite','MESSAGES',['SenderId','SentDate','SentTime','Message'],'ReceiverId = '+ str(request.session['facultyId']))
+         rows,cols = db.retrieve_data('coredb.sqlite','MESSAGES',['SenderId','SentDate','SentTime','Message'],'ReceiverId = '+ str(request.session['facultyId']+" OR SenderId="+str(request.session['facultyId'])))
          context = []
          for row in rows:
              k = {}
@@ -119,8 +119,9 @@ def viewMessages(request):
              k['date'] = row[1]
              k['time'] = row[2]
              k['message'] = row[3]
+             k['facultyId'] = int(request.session['facultyId'])
              context.append(k)
-         return render(request,'viewMessages.html',{'messages':context})
+         return render(request,'viewMessages.html',{'messages':context,'name':request.session['facultyName']})
      except Exception as e:
         print(f"Exception '{e}' Occured")
         wrong['title'] ='Failure'
@@ -150,7 +151,7 @@ def viewCourses(request):
          class_name = " ".join(classi[0])
          classes.append(class_name)
          subjects.append(subject[0][0])
-         classId.append(str(classi))
+         classId.append(str(course[2]))
      context  = []
      for i in range(len(classes)):
          k = {}
@@ -158,9 +159,9 @@ def viewCourses(request):
          k['subject'] = subjects[i]
          k['classId'] = classId[i]
          k['facultyId'] = request.session['facultyId']
-         k['dateAndTime'] = datetime.today()
+         k['dateAndTime'] = str(datetime.today()).split()[0]
          context.append(k)
-     return render(request,'viewCourses.html',{'courses':context})
+     return render(request,'viewCourses.html',{'courses':context,'name':request.session['facultyName']})
 
 
 

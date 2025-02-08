@@ -9,11 +9,11 @@ urlpatterns = [
    path('admin-dashboard',views.adminDashboard), # Request @/administrator/admin-dashboard
    path('logout',views.logout), # Request @/administrator/logout
    path('update-model',views.updateModel),
-    path('view-messages',views.viewMessages),
-    path('send-message',views.sendMessage),
-    path('view-faculty',views.viewFaculty),
-    path('update-manually',views.updateManually), # Request @/administrator/update-manually
-    path('updatethem',views.updateThem)
+   path('view-messages',views.viewMessages),
+   path('send-message',views.sendMessage),
+   path('view-faculty',views.viewFaculty),
+   path('update-manually',views.updateManually), # Request @/administrator/update-manually
+   path('updatethem',views.updateThem)
 
 
 
