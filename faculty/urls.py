@@ -6,6 +6,7 @@ urlpatterns = [
     path('logout',views.logout),
     path('send-message',views.sendMessage),
     path('view-messages',views.viewMessages),
-    path('view-courses',views.viewCourses)
+    path('view-courses',views.viewCourses),
+    # path('update-password',views.)
 ]
 #role
