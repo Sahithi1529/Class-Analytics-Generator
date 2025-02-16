@@ -1,0 +1,56 @@
+{% extends 'adminNav.html' %}
+{% block title%}
+    <title>Messages</title>
+{% endblock %}
+
+{% block link%}
+<!-- <link rel="stylesheet" href="/static/stylesheets/Common.css"> -->
+<link rel="stylesheet" href="/static/stylesheets/messages.css">
+{% endblock %}
+
+{% block profile%}
+{{name}}
+{% endblock %}
+
+{% block body %}
+<body>
+    <div class="messages-container">
+        <h1>Messages</h1>
+        <table>
+            <tr>
+                <th>Sender</th>
+                <th>Date</th>
+                <th>Time</th>
+                <th>Message</th>
+            </tr>
+            {% for row in messages %}
+            <tr>
+                {% if row.sender == row.adminId %}
+                <td>You</td>
+                {% else %}
+                <td>{{row.sender}}</td>
+                {% endif %}
+                <td>{{row.date}}</td>
+                <td>{{row.time}}</td>
+                <td>{{row.message}}</td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+    <div class="container">
+        <h2>Send Message to Faculty<span>Maximum Message Size is 99</span></h2>
+        <form action="/administrator/send-message" method="post">
+            {% csrf_token %}
+            
+            <input type="text" name="facultyId" maxlength="5" placeholder="Enter Faculty ID" required>
+            <input type="text" name="message" maxlength="99" placeholder="Enter your message" required>
+            <input type="submit" value="Send Message">
+        </form>
+    </div>
+
+{% endblock %}
+
+{% block script%}
+<!-- <script src="/static/scripts/Common.js"></script> -->
+<script src="/static/scripts/messages.js"></script>
+{% endblock %}

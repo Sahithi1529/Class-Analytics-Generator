@@ -1,0 +1,66 @@
+{% extends 'adminNav.html' %}
+
+{% block title %}
+<title>Manage Databases</title>
+{% endblock %}
+
+{%block link%}
+<link rel="stylesheet" href="/static/stylesheets/updateDB.css">
+{% endblock %}
+
+{% block profile %}
+{{name}}
+{% endblock %}
+
+{% block body %}
+<div class="container">
+    <div class="left">
+        <form action="add-via-csv" method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            <h1>Add data via CSV</h1>
+            <label>Choose which database to update</label>
+            <select name="update-what">
+                <option value="admin">Admin</option>
+                <option value="faculty">Faculty</option>
+                <option value="course">Course</option>
+                <option value="mapping">Mapping</option>
+                <option value="classroom">Classroom</option>
+            </select>
+            <input type="file" accept=".csv" name="csvfile">
+            <input type="submit" value="Add to Database">
+        </form>
+    </div>
+    <div class="right">
+        <div class="right-top">
+            <form action="update-manually">
+                <h1> Add Data into Database</h1>
+                <label for="database">Choose Database to Insert:</label>
+                <select name="update-what" id="database">
+                    <option value="admin">Admin</option>
+                    <option value="faculty">Faculty</option>
+                    <option value="course">Course</option>
+                    <option value="mapping">Mapping</option>
+                    <option value="classroom">Classroom</option>
+                </select>
+                <input type="submit" value="Proceed...">
+            </form>
+        </div>
+        <div class="right-bottom">
+            <form action="update-model" method="post" >
+                {% csrf_token %}
+                <h1>Update Model</h1>
+                <input type="hidden" name="update-what" value="model">
+                <label for="model-upload">Upload Model File:</label>
+                <input type="file" name="model" id="model-upload" accept=".pt" required>
+                <input type="submit" value="Upload The Model">
+            </form>
+        </div>
+    </div>
+</div>
+
+
+{% endblock %}
+
+{% block script %}
+<script src="/static/scripts/updateDB.js"></script>
+{% endblock %}

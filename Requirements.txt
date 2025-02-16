@@ -1,2 +1,11 @@
 django==5.1.5
 opencv-python==4.11.0.86
+
+| Title | Year of Publication | Author(s) | Algorithms Used | Limitations |
+|---|---|---|---|---|
+| Measuring engagement in fourth to twelfth grade classrooms: The Classroom Engagement Inventory | 2014 | Not specified | Survey-based CEI (5-Factor 24-item model) | Potential for inaccurate responses; no online integration; manual analytics; no real-time monitoring |
+| Measuring real-time learner engagement in the Japanese EFL classroom | Not specified | Not specified | Online feedback via 3-question application (ClassMoto) | Limited number of questions; potential for erroneous answers affecting results |
+| Classroom Analytics: Measuring Student Engagement with Automated Gaze Tracking | 2011 | J. Bidwell and H. Fuchs | Automated gaze tracking | Limitations not explicitly stated |
+| An intelligent system for monitoring students' engagement in large classroom teaching through facial expression recognition | Not specified | Not specified | Face detection combined with CNN for facial expression recognition and frame-wise group engagement estimation | Relies on video data quality; challenges with occlusion and varying illumination not explicitly addressed |
+| Unobtrusive Behavioral Analysis of Students in Classroom Environment Using Non-Verbal Cues | Not specified | Not specified | Convolutional Neural Network for classifying facial expressions, hand movements, and postures | Issues with occlusion, background clutter, pose variations, illumination differences, cropping, and multi-point views |
+| Student Classroom Behavior Detection and Analysis Based on Spatio-Temporal Network and Multi-Model Fusion | 2024 | F. Yang, X. Wang, B. Zhong, and J. Zhong | Spatio-Temporal Network and Multi-Model Fusion | Limitations not explicitly mentioned |

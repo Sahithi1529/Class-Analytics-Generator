@@ -86,17 +86,22 @@ def insert_into_table(database,tablename,values):
 
 # Insert into the table using file
 def insert_into_table_from_file(database,tablename,filename,filetype='.csv'):
-    if filetype=='xlsx':
-        dfe = pd.read_excel(filename)
-    else:
-        dfe = pd.read_csv(filename)
-    rows = []
-    for index in range(len(dfe)):
-        row = dfe.iloc[[index]]
-        rows.append(row.values[0])
-    insert_into_table(database,tablename,rows)
-    print("Inserted Successfully!")
-    return True
+    
+    try:
+        if filetype=='xlsx':
+            dfe = pd.read_excel(filename)
+        else:
+            dfe = pd.read_csv(filename)
+        rows = []
+        for index in range(len(dfe)):
+            row = dfe.iloc[[index]]
+            rows.append(row.values[0])
+        insert_into_table(database,tablename,rows)
+        print("Inserted Successfully!")
+        return True
+    except Exception as e:
+        print(f"Exception '{e}' occurred while Inserting data")
+        return False
 
     
 # Download as csv file
@@ -128,7 +133,7 @@ def update_data(database, tablename, update_values, condition=None):
     if condition:
         SQL_QUERY+=f" WHERE {condition}"
     SQL_QUERY+=';'
-
+    print(SQL_QUERY)
     new_values = list(update_values.values())
     print(new_values)
     try:

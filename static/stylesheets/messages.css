@@ -1,33 +1,72 @@
 body {
-    font-family: Arial, sans-serif;
-    min-height: 100vh;
     display: flex;
-    justify-content: flex-start;
+    justify-content: center;
     align-items: center;
-    background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-    margin: 0;
+    /* background-color: blue; */
+    background: linear-gradient(to right, #3a7bd5, #3a6073);
+    margin-top:5.5%;
     padding: 20px;
-    flex-direction: column;
-    padding-top: 50px;
+    padding-bottom:10% ;
 }
 
 .messages-container,
 .faculty-container {
     background: white;
-    padding: 2rem;
+    padding: 2rem ;
     border-radius: 15px;
-    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-    width: 90%;
-    max-width: 1000px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.808);
+    width: 80%;
     opacity: 0;
     transform: translateY(20px);
-    margin-top: 20px;
+    /* margin-top: 10px; */
 }
 
+.container{
+    background:rgb(226, 226, 226);
+    backdrop-filter: blur(10px);
+    position: fixed;
+    bottom: 0;
+    height: 15%;
+    width: 85%;
+    opacity: 0;
+    border-radius: 15px 15px 0 0 ;
+    border:3px solid transparent;
+    border-bottom:0;
+    border-image: linear-gradient(to right, #3a7bd5, #3a6073);;
+    border-image-slice:1;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    display: flex;
+    justify-content:space-evenly;
+    align-items: center;
+    transform: translateY(50%)
+}
+.container h2{
+    font-weight:500;
+    display: inline-block;
+    position: relative;
+    border-radius: 15px;
+
+}
 h1 {
+    position: relative;
     text-align: center;
     color: #4a5568;
     margin-bottom: 1.5rem;
+    padding-bottom: 10px;
+    display: inline-block;  /* This makes the element only as wide as its content */
+    left: 50%;  /* Center the h1 */
+    transform: translateX(-50%);  /* Complete the centering */
+}
+
+/* New gradient underline for h1 that matches text width */
+h1::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    height: 2px;
+    width: 100%;  /* Now 100% refers to the text width since parent is inline-block */
+    background: linear-gradient(to right, #3a7bd5, #3a6073);
 }
 
 table {
@@ -90,3 +129,49 @@ tr:hover {
 .generate-btn:hover::after {
     left: 100%;
 }
+
+form{
+    display: inline-block;
+    gap: 20px;
+}
+span{
+    display: block;
+    text-align: center;
+    font-size: small;
+}
+
+input[type="text"] {
+    padding: 15px;
+    border: 2px solid #dfe6e9;
+    border-radius: 10px;
+    font-size: 16px;
+    transition: all 0.3s ease;
+    opacity: 0;
+    transform: translateY(20px);
+}
+
+input[type="text"]:focus {
+    outline: none;
+    border: 2px solid #8ec5fc;
+    background: white;
+    box-shadow: 0 5px 15px rgba(142, 197, 252, 0.3);
+}
+input[type="submit"] {
+    padding: 15px;
+    border: none;
+    border-radius: 10px;
+    background: linear-gradient(45deg, #667eea, #764ba2);
+    color: white;
+    font-size: 16px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    opacity: 0;
+    transform: scale(0.2);
+}
+
+input[type="submit"]:hover {
+    background: linear-gradient(45deg, #764ba2, #667eea);
+    transform: scale(0.05);
+    box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3);
+}
+

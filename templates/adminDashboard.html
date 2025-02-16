@@ -6,7 +6,7 @@
 
 {% block link%}
 <link rel="stylesheet" href="/static/stylesheets/adminDashboard.css">
-<!-- <link rel="stylesheet" href="/static/stylesheets/facultyDashboard.css"> -->
+<link rel="stylesheet" href="/static/stylesheets/Common.css">
 {% endblock %}
 
 {% block profile%}
@@ -50,18 +50,6 @@
                 <p>Click to select file</p>
                 <input type="file" name="model" style="display: none" id="modelInput">
             </div>
-        </form>
-    </div>
-
-    <!-- Message Form -->
-    <div class="form-container message-form">
-        <h2>Send Message</h2>
-        <form action="/administrator/send-message" method="post">
-            {% csrf_token %}
-            <label>Maximum Message Size is 99 characters</label>
-            <input type="text" name="message" maxlength="99" placeholder="Enter your message">
-            <input type="text" name="receiverId" maxlength="3" placeholder="Enter receiver ID">
-            <input type="submit" value="Send Message">
         </form>
     </div>
 </div>

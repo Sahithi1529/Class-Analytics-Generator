@@ -1,7 +1,12 @@
 from django.shortcuts import render
-from django.http import HttpResponse,HttpResponseRedirect
+from django.http import HttpResponse,HttpResponseRedirect, StreamingHttpResponse
 import database_operations as db
 from datetime import datetime
+import pandas as pd
+import matplotlib.pyplot as plt
+import io
+import os
+from Class_Analytics_Generator import settings
 correct = {
     'message':"",
     'description':"",
@@ -113,7 +118,8 @@ def viewMessages(request):
      try:
          rows,cols = db.retrieve_data('coredb.sqlite','MESSAGES',['SenderId','SentDate','SentTime','Message'],'ReceiverId = '+ str(request.session['facultyId']+" OR SenderId="+str(request.session['facultyId'])))
          context = []
-         for row in rows:
+         for i in range(1,len(rows)+1):
+             row = rows[-i]
              k = {}
              k['sender'] = row[0]
              k['date'] = row[1]
@@ -140,7 +146,7 @@ def viewCourses(request):
         wrong['message'] = "Only GET requests are accepted!!"
         return render(request,'messenger.html',wrong)
      date = str(datetime.today()).split()[0]
-     courses,cols = db.retrieve_data('coredb.sqlite','MAPPING',['*'],f"FACULTYID = {str(request.session['facultyId'])}  AND CLASSDATE = '{str(date)}'")
+     courses,cols = db.retrieve_data('coredb.sqlite','MAPPING',['*'],f"FACULTYID = {str(request.session['facultyId'])}")
      classes = []
      subjects = []
      classId = []
@@ -172,13 +178,13 @@ def updatePassword(request):
         wrong['message'] = "Access Blocked"
         return render(request,'messenger.html',wrong)
     if request.method !='POST':
-        wrong['title'] ='Failure'
-        wrong['message'] = "Only POST requests are accepted!!"
-        return render(request,'messenger.html',wrong)
+        return render(request,'updatePassword.html',{'name':request.session['facultyName']})
     entered_curr_password = request.POST.get('currentPassword')
     entered_new_password = request.POST.get('newPassword')
-    actual_password,cols = db.retrieve_data('coredb.sqlite','FACULTY',['facultyPassword','facultyName'],'facultyID = '+ request.session['facultyId'])
-    if entered_curr_password == actual_password:
+    print(entered_curr_password)
+    actual_password,cols = db.retrieve_data('coredb.sqlite','FACULTY',['facultyPassword'],'facultyID = '+ request.session['facultyId'])
+    print(actual_password[0][0])
+    if str(entered_curr_password) == str(actual_password[0][0]):
         status = db.update_data('coredb.sqlite','FACULTY',{'facultyPassword':entered_new_password},' FACULTYID = '+str(request.session['facultyId']))
         if status:
             correct['title'] = "Success"
@@ -194,9 +200,62 @@ def updatePassword(request):
         wrong['message'] = "Please enter correct current password!!"
         return render(request,'messenger.html',wrong)
     
+def generateAnalytics(request):
+    if not request.session['isAuthenticated'] or request.session['role']!='faculty' or request.method!="GET":
+        wrong['title'] = "Failure"
+        wrong['message'] = "Access Blocked"
+        return render(request,'messenger.html',wrong)
+    # User is allowed to view stats
+    facultyId = request.session['facultyId']
+    mappings, cols = db.retrieve_data('coredb.sqlite','MAPPING',["*"],f'FACULTYID = {facultyId} AND COMPLETED = 1') # 1 means completed
+    print(mappings)
+    file_names = []
+    classIds = []
+    dates = []
+    for mapping in mappings:
+       filename = str(mapping[2])+"-"+str(facultyId)+"-"+str(mapping[4])+'.csv'
+       file_names.append(filename)
+       classIds.append(mapping[2])
+       dates.append(mapping[4])
+    context = []
+    for i in range(len(file_names)):
+        k = {}
+        k['classId'] = classIds[i]
+        k['date'] = dates[i]
+        k['filename'] = file_names[i]
+        context.append(k)
+    return render(request,'displayAnalyticsFaculty.html',{'context':context,'name':request.session['facultyName'],'facultyId':facultyId})
 
 
+def showPieChart(request):
+    facultyId = request.GET.get('facultyId')
+    mappings, cols = db.retrieve_data('coredb.sqlite','MAPPING',["*"],f'FACULTYID = {facultyId} AND COMPLETED = 1') # 1 means completed
+    print(mappings)
+    file_names = []
+    total_engaged = 0
+    total_not_engaged = 0
+    for mapping in mappings:
+       filename = str(mapping[2])+"-"+str(facultyId)+"-"+str(mapping[4])+'.csv'
+       file_names.append(filename)
+    for filename in file_names:
+        dfe = pd.read_csv(os.path.join(settings.BASE_DIR,'static','resources',filename))
+        sum_engaged = dfe['Engaged'].sum()
+        sum_not_engaged = dfe['Not Engaged'].sum()
+        total_engaged = (total_engaged + sum_engaged)
+        total_not_engaged = (total_not_engaged + sum_not_engaged)
+    plt.pie([total_engaged,total_not_engaged],autopct="%.2f",textprops={'weight':'bold'},labels=["Engaged","Not Engaged"],colors=["green","red"],shadow=True)
+    plt.title("Average Engagement of faculty "+facultyId)
+    plt.legend()
+    buf = io.BytesIO()
+    plt.savefig(buf, format="jpg")
+    frame = buf.getvalue()
+    yield (b'--frame\r\n'
+            b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n\r\n')
 
+
+def streamPieChart(request):
+    chart = showPieChart(request)
+    return StreamingHttpResponse(chart,content_type="multipart/x-mixed-replace;boundary=frame")
 
      
          

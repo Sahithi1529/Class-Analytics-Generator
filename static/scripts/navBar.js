@@ -18,9 +18,4 @@ document.addEventListener('DOMContentLoaded', () => {
         ease: "power2.out"
     });
 
-    particlesJS.load('particles-js', "/static/scripts/particles-config.json", function() {
-    console.log("Particles.js loaded successfully!");
-    });
-
 });
-

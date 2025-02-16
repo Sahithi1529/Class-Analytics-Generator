@@ -7,6 +7,8 @@ urlpatterns = [
     path('send-message',views.sendMessage),
     path('view-messages',views.viewMessages),
     path('view-courses',views.viewCourses),
-    path('update-password',views.updatePassword)
+    path('update-password',views.updatePassword),
+    path('display-analytics',views.generateAnalytics),
+    path('stream-piechart',views.streamPieChart,name='stream-piechart')
 ]
 #role

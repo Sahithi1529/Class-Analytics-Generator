@@ -58,7 +58,8 @@ time = curr[1][:8]
 # db.create_table('coredb.sqlite','MAPPING',{
 #     'facultyId':'INT ',
 #     'subjectId':'INT',
-#     'classId':'INT', 
+#     'classId':'INT',
+#     'completed':'INT',
 #     'classDate': 'DATE, FOREIGN KEY(facultyId) REFERENCES FACULTY(facultyId), FOREIGN KEY(subjectId) REFERENCES COURSES(subjectId)',
 # })
 
@@ -83,11 +84,13 @@ time = curr[1][:8]
 # print(db.retrieve_data('coredb.sqlite','COURSE'))
 
 # INSERT INTO MAPPING
-# db.insert_into_table('coredb.sqlite','MAPPING',[[201,401,301,'2025-02-09'],[201,402,302,'2025-02-08']])
-# # # # FETCH DATA FROM MAPPING
-# print(db.retrieve_data('coredb.sqlite','MAPPING'))
+# db.insert_into_table('coredb.sqlite','MAPPING',[[201,401,301,0,'2025-02-09'],[201,402,302,1,'2025-02-08']])
+# # # # # FETCH DATA FROM MAPPING
+print(db.retrieve_data('coredb.sqlite','COURSE'))
 
 # con = db.connection_object('coredb.sqlite')
 # rows = con.execute(f"SELECT * FROM MAPPING WHERE FACULTYID = 201 AND CLASSDATE = '{date}'")
 # for row in rows:
 #     print(row)
+
+# db.update_data('coredb.sqlite','MAPPING',{'completed':0},"FACULTYID = 201 AND CLASSID=302 AND CLASSDATE='2025-02-08'")

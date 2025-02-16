@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #0f172a;
+            overflow: hidden;
+        }
+
+        .splash-container {
+            position: fixed;
+            width: 100%;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .logo {
+            font-size: clamp(2rem, 8vw, 4rem);
+            color: #ffffff;
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            position: relative;
+            opacity: 0;
+            white-space: nowrap;
+        }
+
+        .letter {
+            display: inline-block;
+            font-weight: bold;
+            transform: translateY(0);
+            will-change: transform, opacity;
+        }
+
+        .circle {
+            position: fixed;
+            border-radius: 50%;
+            background-color: #3b82f6;
+            opacity: 0;
+            pointer-events: none;
+            will-change: transform, opacity;
+        }
+
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #0f172a;
+            transform-origin: top;
+            z-index: 1001;
+            will-change: transform;
+        }
+
+        @media (max-width: 768px) {
+            .logo {
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="splash-container">
+        <div class="logo">
+            <span class="letter">W</span>
+            <span class="letter">E</span>
+            <span class="letter">L</span>
+            <span class="letter">C</span>
+            <span class="letter">O</span>
+            <span class="letter">M</span>
+            <span class="letter">E</span>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" integrity="sha512-7eHRwcbYkK4d9g/6tD/mhkf++eoTHwpNM9woBxtPUBWm67zeAfFC+HrdoE2GanKeocly/VxeLvIqwvCdk7qScg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script>
+        function createCircles() {
+            const container = document.querySelector('.splash-container');
+            const circleCount = window.innerWidth < 768 ? 30 : 50;
+            
+            for (let i = 0; i < circleCount; i++) {
+                const circle = document.createElement('div');
+                circle.className = 'circle';
+                const size = Math.random() * (window.innerWidth < 768 ? 15 : 20);
+                circle.style.width = `${size}px`;
+                circle.style.height = `${size}px`;
+                circle.style.left = `${Math.random() * 100}vw`;
+                circle.style.top = `${Math.random() * 100}vh`;
+                container.appendChild(circle);
+            }
+        }
+
+        function initAnimation() {
+            // Clear any existing circles
+            document.querySelectorAll('.circle').forEach(circle => circle.remove());
+            
+            // Create new circles
+            createCircles();
+
+            const timeline = gsap.timeline({
+                onComplete: () => {
+                    // Optional: Clean up after animation
+                    setTimeout(() => {
+                        document.querySelector('.splash-container').style.display = 'none';
+                    }, 1000);
+                }
+            });
+
+            // Reset initial states
+            gsap.set('.circle', { opacity: 0, scale: 0 });
+            gsap.set('.logo', { opacity: 0 });
+            gsap.set('.letter', { y: 100, opacity: 0 });
+
+            // Animate circles in
+            timeline.to('.circle', {
+                opacity: 0.6,
+                scale: 1,
+                duration: 0.4,
+                stagger: {
+                    amount: 0.5,
+                    from: "random"
+                },
+                ease: "power2.out"
+            });
+
+            // Animate letters
+            timeline.to('.logo', {
+                opacity: 1,
+                duration: 0.1
+            })
+            .to('.letter', {
+                y: 0,
+                opacity: 1,
+                duration: 0.8,
+                stagger: 0.1,
+                ease: "back.out(1.7)"
+            });
+
+            // Animate circles out
+            timeline.to('.circle', {
+                scale: 0,
+                opacity: 0,
+                duration: 0.8,
+                stagger: {
+                    amount: 0.5,
+                    from: "random"
+                },
+                ease: "power2.in"
+            });
+
+            // Create and animate overlay
+            const overlay = document.createElement('div');
+            overlay.className = 'overlay';
+            document.body.appendChild(overlay);
+
+            timeline.to('.overlay', {
+                scaleY: 0,
+                duration: 1,
+                delay: 0.2,
+                ease: "power4.inOut"
+            });
+        }
+
+        // Start animation when page is fully loaded
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initAnimation);
+        } else {
+            initAnimation();
+        }
+
+        // Handle resize
+        let resizeTimeout;
+        window.addEventListener('resize', () => {
+            clearTimeout(resizeTimeout);
+            resizeTimeout = setTimeout(initAnimation, 250);
+        });
+    </script>
+</body>
+</html>

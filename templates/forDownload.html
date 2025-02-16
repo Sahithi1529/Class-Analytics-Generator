@@ -6,11 +6,13 @@
     <title>For download</title>
 </head>
 <body onload="download()">
+    <input type="text" id="file" value={{file}} hidden>
     <script>
         function download()
         {
+            var file = document.getElementById("file").value;
             var a = document.createElement('a');
-            a.setAttribute("href","/static/faculty.csv");
+            a.setAttribute("href",`/static/resources/${file}.csv`);
             console.log("Here");
             document.body.appendChild(a);
             a.click();

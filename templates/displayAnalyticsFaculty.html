@@ -1,0 +1,64 @@
+{% extends 'facultyNav.html' %}
+
+{% block title%}
+<title>Display Analytics</title>
+{% endblock %}
+
+{% block link%}
+<link rel="stylesheet" href="/static/stylesheets/messages.css">
+
+{% endblock %}
+
+{% block profile%}
+{{name}}
+{% endblock %}
+{% block body %}
+
+    <div class="faculty-container">
+        <h1>Analytics for {{facultyId}}</h1>
+        <table>
+            <tr>
+                <th>Class ID</th>
+                <th>Date</th>
+                <th>Download CSV</th>
+            </tr>
+            {% for item in context %}
+            <tr>
+                <td>{{item.classId}}</td>
+                <td>{{item.date}}</td>
+                <td><a href="/static/resources/{{item.filename}}" class="generate-btn">Download</a></td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+    <img src="{% url 'stream-piechart' %}?facultyId={{facultyId}}" height="25%" weight="25%">
+{% endblock %}
+{% block script%}
+<script src="/static/scripts/messages.js"></script>
+{% endblock %}
+    <!-- <script>   
+        gsap.to('.faculty-container', {
+            opacity: 1,
+            y: 0,
+            duration: 1,
+            ease: 'power2.out'
+        });
+
+        gsap.to('table', {
+            opacity: 1,
+            duration: 1,
+            delay: 0.5,
+            ease: 'power2.out'
+        });
+
+        // Add a subtle pop animation for generate buttons
+        gsap.from('.generate-btn', {
+            scale: 0.9,
+            duration: 0.5,
+            delay: 1,
+            stagger: 0.1,
+            ease: 'back.out(1.7)'
+        });
+    </script> -->
+</body>
+</html>

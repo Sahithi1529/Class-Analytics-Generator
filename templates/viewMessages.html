@@ -5,7 +5,6 @@
 
 {% block link%}
 <link rel="stylesheet" href="/static/stylesheets/messages.css">
-<link rel="stylesheet" href="/static/stylesheets/facultyDashboard.css">
 {% endblock %}
 
 {% block profile%}
@@ -38,10 +37,9 @@
         </table>
     </div>
     <div class="container">
-        <h1>Send Message to Admin</h1>
+        <h2>Send Message to Admin<span>Maximum Message Size is 99</span></h2>
         <form action="/faculty/send-message" method="post">
             {% csrf_token %}
-            <label>Maximum Message Size is 99</label>
             <input type="text" name="message" maxlength="99" placeholder="Enter your message" required>
             <input type="submit" value="Send Message">
         </form>
@@ -51,5 +49,4 @@
 
 {% block script%}
 <script src="/static/scripts/messages.js"></script>
-<script src="/static/scripts/facultyDashboard.js"></script>
 {% endblock %}

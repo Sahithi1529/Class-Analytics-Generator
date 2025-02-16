@@ -1,18 +1,178 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Testing</title>
-    <link rel="stylesheet" href="/static/stylesheets/test.css">
-   
-</head>
-<body>
-    <div class="buttons">
-        <button id="view-data-btn">View Data</button>
-        <button id="download-data-btn">Download CSV</button>
-        <button id="insert-data-btn">Insert through CSV</button>
-    </div> 
-    <script src="/static/scripts/test.js"></script>
-</body>
+<!DOCTYPE html>  
+<html lang="en">  
+<head>  
+    <meta charset="UTF-8">  
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">  
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">  
+    <title>Messages</title>  
+    <!-- <link rel="stylesheet" href="/static/stylesheets/messages.css">   -->
+    <style>  
+        /* Basic styles for the messages container */  
+        body {  
+            font-family: Arial, sans-serif;  
+            margin: 0;  
+            padding: 0;  
+            background-color: #f4f4f4;  
+        }  
+
+        .messages-container {  
+            width: 80%;  
+            margin: auto;  
+            padding: 20px;  
+            background: white;  
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);  
+        }  
+
+        h1 {  
+            text-align: center;  
+            margin-bottom: 20px;  
+        }  
+
+        table {  
+            width: 100%;  
+            border-collapse: collapse;  
+            margin-bottom: 20px;  
+        }  
+
+        table, th, td {  
+            border: 1px solid #ddd;  
+        }  
+
+        th, td {  
+            padding: 12px;  
+            text-align: left;  
+        }  
+
+        th {  
+            background-color: #f2f2f2;  
+            color: black;  
+        }  
+
+        button {  
+            padding: 10px 15px;  
+            font-size: 16px;  
+            background-color: #5cb85c;  
+            color: white;  
+            border: none;  
+            cursor: pointer;  
+            border-radius: 5px;  
+        }  
+
+        button:hover {  
+            background-color: #4cae4c;  
+        }  
+
+        /* Modal styles */  
+        .modal {  
+            display: none;   
+            position: fixed;   
+            z-index: 1;   
+            left: 0;  
+            top: 0;  
+            width: 100%;   
+            height: 100%;   
+            overflow: auto;   
+            background-color: rgba(0, 0, 0, 0.4);   
+        }  
+
+        .modal-content {  
+            background-color: #fefefe;  
+            margin: 15% auto;   
+            padding: 20px;  
+            border: 1px solid #888;  
+            width: 30%;   
+            position: relative;  
+        }  
+
+        .close-button {  
+            color: #aaa;  
+            float: right;  
+            font-size: 28px;  
+            font-weight: bold;  
+            cursor: pointer;  
+        }  
+
+        .close-button:hover,  
+        .close-button:focus {  
+            color: black;  
+            text-decoration: none;  
+        }  
+    </style>  
+</head>  
+<body>  
+    <div class="messages-container">  
+        <h1>Messages</h1>  
+        <table>  
+            <tr>  
+                <th>Sender</th>  
+                <th>Date</th>  
+                <th>Time</th>  
+                <th>Message</th>  
+            </tr>  
+            {% for row in messages %}  
+            <tr>  
+                {% if row.sender == row.adminId %}  
+                <td>You</td>  
+                {% else %}  
+                <td>{{row.sender}}</td>  
+                {% endif %}  
+                <td>{{row.date}}</td>  
+                <td>{{row.time}}</td>  
+                <td>{{row.message}}</td>  
+            </tr>  
+            {% endfor %}  
+        </table>  
+        <div>  
+            <button id="sendMessageButton">Send Message to Faculty</button>  
+        </div>  
+    </div>  
+
+    <!-- Modal HTML Structure -->  
+    <div id="messageModal" class="modal">  
+        <div class="modal-content">  
+            <span class="close-button">&times;</span>  
+            <h2>Send Message</h2>  
+            <form id="messageForm" action="/administrator/send-message" method="post">  
+                {% csrf_token %}  
+                <label for="facultyId">Faculty ID:</label>  
+                <input type="text" name="facultyId" id="facultyId" maxlength="5" placeholder="Enter Faculty ID" required>  
+                <label for="message">Message:</label>  
+                <textarea name="message" id="message" maxlength="99" placeholder="Enter your message" required></textarea>  
+                <button type="submit">Send Message</button>  
+            </form>  
+        </div>  
+    </div>  
+
+    <script>  
+        // Get modal and button elements  
+        var modal = document.getElementById("messageModal");  
+        var sendMessageButton = document.getElementById("sendMessageButton");  
+        var closeButton = document.getElementsByClassName("close-button")[0];  
+
+        // Show modal on button click  
+        sendMessageButton.onclick = function() {  
+            modal.style.display = "block";  
+        }  
+
+        // Close modal  
+        closeButton.onclick = function() {  
+            modal.style.display = "none";  
+        }  
+
+        // Close modal if clicking outside of it  
+        window.onclick = function(event) {  
+            if (event.target == modal) {  
+                modal.style.display = "none";  
+            }  
+        }  
+
+        // Reload the page after form submission  
+        document.getElementById("messageForm").onsubmit = function() {  
+            setTimeout(function() {  
+                modal.style.display = "none"; // Close the modal  
+                location.reload(); // Reload the page  
+            }, 500); // Delay to allow form submission  
+        }  
+    </script>  
+</body>  
 </html>

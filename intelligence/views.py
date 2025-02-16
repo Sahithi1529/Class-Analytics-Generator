@@ -11,6 +11,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import io
 from django.views.decorators import gzip
+import database_operations as db
 class Flag:
     flag = False
 correct = {
@@ -59,6 +60,7 @@ def startTracking(request):
      facultyId = request.GET.get('facultyId')
      dateAndTime = request.GET.get('dateAndTime')
      filename = classId+"-"+facultyId+"-"+dateAndTime+'.csv'
+     db.update_data('coredb.sqlite','MAPPING',{'completed':1},f"FACULTYID = {facultyId} AND CLASSID = {classId} AND CLASSDATE='{dateAndTime}'")
      return render(request,'liveAnalytics.html',{'filename':filename})
 
 

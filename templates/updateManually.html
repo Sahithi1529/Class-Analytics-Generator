@@ -1,147 +1,19 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Dashboard</title>
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap">
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Poppins', sans-serif;
-        }
+{% extends 'adminNav.html' %}
 
-        body {
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-            padding-top: 80px;
-        }
+{% block title%}
+<title>Database Update </title>
+{% endblock %}
 
-        #nav-bar {
-            list-style: none;
-            display: flex;
-            justify-content: center;
-            background: rgba(255, 255, 255, 0.9);
-            backdrop-filter: blur(10px);
-            padding: 15px 30px;
-            border-radius: 10px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-            position: fixed;
-            top: 10px;
-            left: 50%;
-            transform: translateX(-50%);
-            z-index: 1000;
-        }
+{% block link%}
+<link rel="stylesheet" href="/static/stylesheets/updateForm.css">
+{% endblock %}
 
-        #nav-bar li {
-            margin: 0 15px;
-            font-size: 16px;
-            font-weight: 500;
-        }
-
-        #nav-bar a {
-            text-decoration: none;
-            color: #2c3e50;
-            transition: color 0.3s ease;
-        }
-
-        #nav-bar a:hover {
-            color: #764ba2;
-        }
-
-        .user-name {
-            font-weight: 600;
-            color: #764ba2;
-        }
-
-        .form-container {
-            background: white;
-            padding: 2rem;
-            border-radius: 15px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-            width: 90%;
-            max-width: 600px;
-            margin: 20px 0;
-        }
-
-        .form-container h2 {
-            text-align: center;
-            color: #4a5568;
-            margin-bottom: 1.5rem;
-        }
-
-        input[type="text"] {
-            width: 100%;
-            padding: 12px;
-            margin: 8px 0;
-            border: 1px solid #e2e8f0;
-            border-radius: 8px;
-            font-size: 16px;
-            transition: all 0.3s ease;
-        }
-
-        input[type="text"]:focus {
-            border-color: #667eea;
-            box-shadow: 0 0 0 2px rgba(102, 126, 234, 0.2);
-            outline: none;
-        }
-
-        label {
-            display: block;
-            margin-top: 12px;
-            color: #4a5568;
-            font-weight: 500;
-        }
-
-        input[type="submit"] {
-            width: 100%;
-            padding: 12px;
-            border: none;
-            border-radius: 8px;
-            background: linear-gradient(45deg, #667eea, #764ba2);
-            color: white;
-            font-size: 16px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            margin-top: 20px;
-        }
-
-        input[type="submit"]:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
-        }
-
-        h1 {
-            text-align: center;
-            color: #4a5568;
-            margin-bottom: 1.5rem;
-            font-size: 2em;
-            background: linear-gradient(45deg, #667eea, #764ba2);
-            -webkit-background-clip: text;
-            background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-    </style>
-</head>
-<body>
-
-    <!-- Navigation Bar -->
-    <ul id="nav-bar">
-        <li><a href="#">Home</a></li>
-        <li><a href="#">Faculty</a></li>
-        <li><a href="#">Manage Admins</a></li>
-        <li><a href="#">Update Profile</a></li>
-        <li><a href="#">Logout</a></li>
-        <li class="user-name">{{ Name }}</li>
-    </ul>
-    
-    <h1>Welcome, {{ Name }}</h1>
-    <div class="form-container">
+{% block profile%}
+{{name}}
+{% endblock %}
+{% block body %}
+<div class="container">
+        <h1>Update {{ updateWhat }}</h1>
         <form action="/administrator/updatethem" method="post">
             {%csrf_token%}
             {% for column in fields %}
@@ -152,52 +24,4 @@
             <input type="submit" value="Submit">
         </form>
     </div>
-
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
-    <script>
-        window.addEventListener('DOMContentLoaded', () => {
-            gsap.from("#nav-bar", {
-                duration: 1,
-                y: -50,
-                opacity: 0,
-                ease: "power3.out"
-            });
-
-            gsap.from("#nav-bar li", {
-                duration: 0.8,
-                opacity: 0,
-                y: -20,
-                stagger: 0.1,
-                ease: "power2.out",
-                delay: 0.5
-            });
-
-            gsap.from("h1", {
-                duration: 1,
-                opacity: 0,
-                y: 30,
-                ease: "power2.out",
-                delay: 0.8
-            });
-
-            gsap.from(".form-container", {
-                duration: 1,
-                opacity: 0,
-                y: 50,
-                ease: "power2.out",
-                delay: 1
-            });
-
-            gsap.from("input, label", {
-                duration: 0.6,
-                opacity: 0,
-                y: 20,
-                stagger: 0.1,
-                ease: "power2.out",
-                delay: 1.2
-            });
-        });
-    </script>
-
-</body>
-</html>
+{% endblock %}
